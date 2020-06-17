@@ -5,15 +5,17 @@
     <string name="permission_write_rationale">OpenTrace needs save files for logs (Debug builds only)</string>
     <string name="ble_not_supported">This device does not support BLE</string>
 
-    <string name="tv_onboarding_title">Help stop the spread of COVID-19 by turning Bluetooth on</string>
-    <string name="tv_onboarding_desc">If you had close contact with a COVID-19 case, we help the health authorities call you more quickly, to provide guidance and care.</string>
-    <string name="tv_onboarding_desc_sub">To protect those around you, OTC may also ask you to share your data.</string>
-    <string name="i_want_to_help">I want to help</string>
+    <string name="tv_onboarding_title">Safe Blues</string>
+    <string name="tv_onboarding_desc">Help track the spread of COVID-19 by running Safe Blues on your phone.</string>
+    <string name="tv_onboarding_desc_sub">Visit https://safeblues.org for more information.</string>
+    <string name="i_want_to_help">Get started</string>
 
-    <string name="tv_howitworks_title">How OpenTrace works</string>
-    <string name="tv_howitworks_explanation_1">We use Bluetooth signals to determine if you are near another OpenTrace user.</string>
-    <string name="tv_howitworks_explanation_2">This proximity data is encrypted and stored only on your phone.</string>
-    <string name="tv_howitworks_explanation_3">OTC will seek your consent to upload the data, if it\'s needed for contact tracing.</string>
+    <string name="tv_howitworks_title">How Safe Blues works</string>
+    <string name="tv_howitworks_explanation_1">We use Bluetooth signals to simulate the spread of COVID-19 between your phone and the phones of other Safe Blues users around you.</string>
+    <string name="tv_howitworks_explanation_2">This data allows us to estimate the spread characteristics of COVID-19 and determine the effectiveness of policy without storing your health information and while reducing your privacy risk.</string>
+    <string name="tv_howitworks_explanation_3">The app will communicate with Safe Blues servers daily to sync strand information.</string>
+    <string name="tv_howitworks_button">Continue</string>
+
     <string name="mobile_number">Mobile number</string>
     <string name="register_number">Register your mobile number</string>
     <string name="register_number_details">We\'ll contact you if you had close contact with a COVID-19 case.</string>
