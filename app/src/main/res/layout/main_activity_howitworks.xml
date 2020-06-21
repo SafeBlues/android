@@ -78,7 +78,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:background="#3e7edd"
+        android:background="@drawable/gradient"
         android:fontFamily="@font/font"
         android:text="@string/tv_howitworks_button"
         android:textAllCaps="false"
