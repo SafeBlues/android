@@ -393,7 +393,7 @@ class OnboardingActivity : FragmentActivity(),
 
         val fragmentMap: MutableMap<Int, OnboardingFragmentInterface> = HashMap()
 
-        override fun getCount(): Int = 5
+        override fun getCount(): Int = 3
 
         override fun getItem(position: Int): OnboardingFragmentInterface {
             return fragmentMap.getOrPut(position, { createFragAtIndex(position) })
@@ -403,8 +403,9 @@ class OnboardingActivity : FragmentActivity(),
             return when (index) {
                 0 -> return TOUFragment()
                 1 -> return SetupFragment()
+                2 -> return SetupCompleteFragment()
                 else -> {
-                    SetupCompleteFragment()
+                    TOUFragment()
                 }
             }
         }
