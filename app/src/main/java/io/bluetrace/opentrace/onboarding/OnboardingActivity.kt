@@ -23,11 +23,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseException
-import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.*
-import com.google.firebase.functions.FirebaseFunctions
-import com.google.firebase.functions.HttpsCallableResult
 import kotlinx.android.synthetic.main.activity_onboarding.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -48,8 +43,6 @@ private const val BATTERY_OPTIMISER = 789
 class OnboardingActivity : FragmentActivity(),
     SetupFragment.OnFragmentInteractionListener,
     SetupCompleteFragment.OnFragmentInteractionListener,
-    RegisterNumberFragment.OnFragmentInteractionListener,
-    OTPFragment.OnFragmentInteractionListener,
     TOUFragment.OnFragmentInteractionListener {
 
     private var TAG: String = "OnboardingActivity"
@@ -57,64 +50,6 @@ class OnboardingActivity : FragmentActivity(),
     private var bleSupported = false
     private var speedUp = false
     private var resendingCode = false
-
-    private val functions = FirebaseFunctions.getInstance(BuildConfig.FIREBASE_REGION)
-    private var credential: PhoneAuthCredential by Delegates.notNull()
-    private var verificationId: String by Delegates.notNull()
-    private var resendToken: PhoneAuthProvider.ForceResendingToken by Delegates.notNull()
-    private val phoneNumberVerificationCallbacks =
-        object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
-            override fun onVerificationCompleted(receivedCredential: PhoneAuthCredential) {
-                // This callback will be invoked in two situations:
-                // 1 - Instant verification. In some cases the phone number can be instantly
-                //     verified without needing to send or enter a verification code.
-                // 2 - Auto-retrieval. On some devices Google Play services can automatically
-                //     detect the incoming verification SMS and perform verification without
-                //     user action.
-                CentralLog.d(TAG, "onVerificationCompleted: $receivedCredential")
-                credential = receivedCredential
-                signInWithPhoneAuthCredential(credential)
-                speedUp = true
-            }
-
-            override fun onVerificationFailed(e: FirebaseException) {
-                if (e is FirebaseAuthInvalidCredentialsException) {
-                    CentralLog.d(TAG, "FirebaseAuthInvalidCredentialsException", e)
-//                    alertDialog(getString(R.string.verification_failed))
-                    updatePhoneNumberError(getString(R.string.invalid_number))
-
-                } else if (e is FirebaseTooManyRequestsException) {
-                    CentralLog.d(TAG, "FirebaseTooManyRequestsException", e)
-                    alertDialog(getString(R.string.too_many_requests))
-                }
-
-                enableFragmentbutton()
-
-                CentralLog.d(TAG, "On Verification failure: ${e.message}")
-                onboardingActivityLoadingProgressBarFrame.visibility = View.GONE
-            }
-
-            override fun onCodeSent(
-                receivedVerificationId: String,
-                token: PhoneAuthProvider.ForceResendingToken
-            ) {
-                // The SMS verification code has been sent to the provided phone number, we
-                // now need to ask the user to enter the code and then construct a credential
-                // by combining the code with a verification ID.
-
-                verificationId = receivedVerificationId
-                resendToken = token
-
-                CentralLog.d(TAG, "onCodeSent: $receivedVerificationId")
-                if (resendingCode) {
-                    onboardingActivityLoadingProgressBarFrame.visibility = View.GONE
-                } else {
-                    navigateToNextPage()
-                }
-
-            }
-        }
 
     private fun enableFragmentbutton() {
         var interfaceObject: OnboardingFragmentInterface? = pagerAdapter?.getItem(pager.currentItem)
@@ -133,57 +68,6 @@ class OnboardingActivity : FragmentActivity(),
 
         val alert = dialogBuilder.create()
         alert.show()
-    }
-
-    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-        FirebaseAuth.getInstance().signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    CentralLog.d(TAG, "signInWithCredential:success")
-
-                    val user = task.result?.user
-
-                    if (BluetoothMonitoringService.broadcastMessage == null || TempIDManager.needToUpdate(
-                            applicationContext
-                        )
-                    ) {
-                        getTemporaryID()
-                    }
-                } else {
-                    // Sign in failed, display a message and update the UI
-                    CentralLog.d(TAG, "signInWithCredential:failure", task.exception)
-                    if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                        // The verification code entered was invalid
-                        onboardingActivityLoadingProgressBarFrame.visibility = View.GONE
-                        updateOTPError(getString(R.string.invalid_otp))
-                    } else if (task.exception is FirebaseAuthInvalidUserException) {
-                        alertDialog(getString(R.string.invalid_user))
-                    }
-                    onboardingActivityLoadingProgressBarFrame.visibility = View.GONE
-                }
-            }
-    }
-
-    private fun getTemporaryID(): Task<HttpsCallableResult> {
-        return TempIDManager.getTemporaryIDs(this, functions)
-            .addOnCompleteListener {
-                CentralLog.d(TAG, "Retrieved Temporary ID successfully")
-                Utils.getHandShakePin(this, functions).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        CentralLog.d(TAG, "Retrieved HandShakePin successfully")
-                        navigateToNextPage()
-                    } else {
-                        CentralLog.e(
-                            TAG,
-                            "Failed to retrieve HandShakePin ${it.exception?.message}"
-                        )
-                        updateOTPError(getString(R.string.verification_failed))
-                        onboardingActivityLoadingProgressBarFrame.visibility = View.GONE
-                    }
-                }
-
-            }
     }
 
     private var mIsOpenSetting = false
@@ -495,59 +379,6 @@ class OnboardingActivity : FragmentActivity(),
         pagerAdapter!!.notifyDataSetChanged()
     }
 
-    fun requestForOTP(phoneNumber: String) {
-        onboardingActivityLoadingProgressBarFrame.visibility = View.VISIBLE
-        speedUp = false
-        resendingCode = false
-        PhoneAuthProvider
-            .getInstance()
-            .verifyPhoneNumber(
-                phoneNumber,
-                60,
-                TimeUnit.SECONDS, // Unit of timeout
-                this, // Activity (for callback binding)
-                phoneNumberVerificationCallbacks
-            )
-    }
-
-    fun validateOTP(otp: String) {
-        if (TextUtils.isEmpty(otp) || otp.length < 6) {
-            updateOTPError(getString(R.string.must_be_six_digit))
-            return
-        }
-        onboardingActivityLoadingProgressBarFrame.visibility = View.VISIBLE
-
-        credential = PhoneAuthProvider.getCredential(
-            verificationId,
-            otp
-        )
-        signInWithPhoneAuthCredential(credential)
-    }
-
-    fun resendCode(phoneNumber: String) {
-        onboardingActivityLoadingProgressBarFrame.visibility = View.VISIBLE
-        speedUp = false
-        resendingCode = true
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-            phoneNumber,        // Phone number to verify
-            60,                 // Timeout duration
-            TimeUnit.SECONDS,   // Unit of timeout
-            this,               // Activity (for callback binding)
-            phoneNumberVerificationCallbacks,         // OnVerificationStateChangedCallbacks
-            resendToken
-        )             // ForceResendingToken from callbacks
-    }
-
-    fun updatePhoneNumber(num: String) {
-        val onboardingFragment: OnboardingFragmentInterface = pagerAdapter!!.getItem(1)
-        onboardingFragment.onUpdatePhoneNumber(num)
-    }
-
-    fun updatePhoneNumberError(error: String) {
-        val registerNumberFragment: OnboardingFragmentInterface = pagerAdapter!!.getItem(0)
-        registerNumberFragment.onError(error)
-    }
-
     private fun updateOTPError(error: String) {
         val onboardingFragment: OnboardingFragmentInterface = pagerAdapter!!.getItem(1)
         onboardingFragment.onError(error)
@@ -570,13 +401,10 @@ class OnboardingActivity : FragmentActivity(),
 
         private fun createFragAtIndex(index: Int): OnboardingFragmentInterface {
             return when (index) {
-                0 -> return RegisterNumberFragment()
-                1 -> return OTPFragment()
-                2 -> return TOUFragment()
-                3 -> return SetupFragment()
-                4 -> return SetupCompleteFragment()
+                0 -> return TOUFragment()
+                1 -> return SetupFragment()
                 else -> {
-                    RegisterNumberFragment()
+                    SetupCompleteFragment()
                 }
             }
         }
