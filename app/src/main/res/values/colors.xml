@@ -14,11 +14,11 @@
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>
 
-    <color name="primary_blue_1">#0030A1</color>
-    <color name="primary_blue_2">#003DB5</color>
-    <color name="primary_blue_3">#004AC9</color>
-    <color name="primary_blue_4">#0057DD</color>
-    <color name="primary_blue_5">#0057DD</color>
+    <color name="primary_blue_1">#3E7EDD</color>
+    <color name="primary_blue_2">#4C89E3</color>
+    <color name="primary_blue_3">#5F95E4</color>
+    <color name="primary_blue_4">#649ff7</color>
+    <color name="primary_blue_5">#91B6ED</color>
 
     <color name="secondary_blue_1">#04A5FF</color>
     <color name="secondary_blue_2">#0798EB</color>
