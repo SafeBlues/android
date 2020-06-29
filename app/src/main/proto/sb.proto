@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package sb;
+package safeblues;
 
-option java_package = "org.safeblues.protos";
+option java_package = "org.safeblues.api";
 option java_outer_classname = "SafeBluesProtos";
 
 import "google/protobuf/timestamp.proto";
