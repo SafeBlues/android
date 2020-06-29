@@ -34,6 +34,14 @@ def getGitHash = { ->
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+
+    configurations {
+        implementation.exclude module:'proto-google-common-protos'
+        implementation.exclude module:'protolite-well-known-types'
+        implementation.exclude module:'guava'
+        implementation.exclude module:'protobuf-lite'
+    }
+
     defaultConfig {
         applicationId "org.safeblues.android"
         resValue "string", "build_config_package", "org.safeblues.android"
@@ -193,10 +201,11 @@ dependencies {
     //Lottie
     implementation 'com.airbnb.android:lottie:3.4.0'
 
-    protobuf "io.grpc:grpc-kotlin-stub:$grpc_kotlin_version"
+    implementation "io.grpc:grpc-kotlin-stub:$grpc_kotlin_version"
 
-    protobuf "com.google.protobuf:protobuf-java:$protobuf_version"
-    protobuf "io.grpc:grpc-protobuf:$grpc_version"
+    implementation "com.google.protobuf:protobuf-java:$protobuf_version"
+    implementation "com.google.protobuf:protobuf-java-util:$protobuf_version"
+    implementation "io.grpc:grpc-protobuf:$grpc_version"
     implementation "io.grpc:grpc-okhttp:$grpc_version"
     implementation "io.grpc:grpc-stub:$grpc_version"
 
