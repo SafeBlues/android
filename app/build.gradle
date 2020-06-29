@@ -101,7 +101,7 @@ android {
             minifyEnabled false
             multiDexEnabled false
             zipAlignEnabled true
-            resValue "string", "app_name", "OpenTrace"
+            resValue "string", "app_name", "SafeBlues"
 
             lintOptions {
                 // Ignore lint errors for now
