@@ -9,7 +9,6 @@ apply plugin: "com.cookpad.android.plugin.license-tools"
 
 apply plugin: "com.google.protobuf"
 
-
 //apply plugin: 'com.jaredsburrows.license'
 
 buildscript {
@@ -36,9 +35,6 @@ android {
     buildToolsVersion "29.0.2"
 
     configurations {
-        implementation.exclude module:'proto-google-common-protos'
-        implementation.exclude module:'protolite-well-known-types'
-        implementation.exclude module:'guava'
         implementation.exclude module:'protobuf-lite'
     }
 
@@ -224,6 +220,10 @@ protobuf {
     }
     generateProtoTasks {
         all().each { task ->
+            task.builtins {
+                java { }
+            }
+
             task.plugins {
                 grpc { }
                 grpckt { }
