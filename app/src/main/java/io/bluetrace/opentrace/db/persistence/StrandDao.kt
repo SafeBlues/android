@@ -1,38 +1,25 @@
-package io.bluetrace.opentrace.db.persistence
+package io.bluetrace.opentrace.streetpass.persistence
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.lifecycle.LiveData
+import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 
-@Entity(tableName = "strands")
-class Strand constructor(
-    @ColumnInfo(name = "strand_id")
-    val strand_id: Int,
+@Dao
+interface StrandDao {
 
-    @ColumnInfo(name = "start_time")
-    val start_time: Long,
+    @Query("SELECT * from strands ORDER BY start_time ASC")
+    fun getStrands(): LiveData<List<StreetPassRecord>>
 
-    @ColumnInfo(name = "end_time")
-    val end_time: Long,
+    @Query("SELECT * from strands WHERE start_time > :time AND end_time < :time ORDER BY start_time ASC")
+    fun getActiveStrands(time: Long): List<StreetPassRecord>
 
-    @ColumnInfo(name = "seeding_probability")
-    val seeding_probability: Double,
+    @Query("DELETE FROM strands")
+    fun nukeDb()
 
-    @ColumnInfo(name = "infection_probability")
-    val infection_probability: Double,
+    @Query("DELETE FROM strands WHERE end_time < :before")
+    suspend fun purgeOldRecords(before: Long)
 
-    @ColumnInfo(name = "incubation_period_days")
-    val incubation_period_days: Double,
-
-    @ColumnInfo(name = "infectious_period_days")
-    val infectious_period_days: Double
-) {
-
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    var id: Int = 0
-
-    @ColumnInfo(name = "timestamp")
-    var timestamp: Long = System.currentTimeMillis()
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(record: StreetPassRecord)
 
 }
