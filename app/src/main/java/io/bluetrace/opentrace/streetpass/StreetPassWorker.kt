@@ -12,7 +12,6 @@ import io.bluetrace.opentrace.Utils
 import io.bluetrace.opentrace.bluetooth.gatt.ACTION_DEVICE_PROCESSED
 import io.bluetrace.opentrace.bluetooth.gatt.CONNECTION_DATA
 import io.bluetrace.opentrace.bluetooth.gatt.DEVICE_ADDRESS
-import io.bluetrace.opentrace.idmanager.TempIDManager
 import io.bluetrace.opentrace.logging.CentralLog
 import io.bluetrace.opentrace.protocol.BlueTrace
 import io.bluetrace.opentrace.services.BluetoothMonitoringService
@@ -583,29 +582,19 @@ class StreetPassWorker(val context: Context) {
             if (BlueTrace.supportsCharUUID(characteristic.uuid)) {
                 val bluetraceImplementation = BlueTrace.getImplementation(characteristic.uuid)
 
-                // Only attempt to write BM back to peripheral if it is still valid
-                if (TempIDManager.bmValid(context)) {
-                    //may have failed to read, can try to write
-                    //we are writing as the central device
-                    var writedata = bluetraceImplementation.central.prepareWriteRequestData(
-                        bluetraceImplementation.versionInt,
-                        work.connectable.rssi,
-                        work.connectable.transmissionPower
-                    )
-                    characteristic.value = writedata
-                    val writeSuccess = gatt.writeCharacteristic(characteristic)
-                    CentralLog.i(
-                        TAG,
-                        "Attempt to write characteristic to our service on ${gatt.device.address}: $writeSuccess"
-                    )
-                } else {
-                    CentralLog.i(
-                        TAG,
-                        "Expired BM. Skipping attempt to write characteristic to our service on ${gatt.device.address}"
-                    )
-
-                    endWorkConnection(gatt)
-                }
+                //may have failed to read, can try to write
+                //we are writing as the central device
+                var writedata = bluetraceImplementation.central.prepareWriteRequestData(
+                    bluetraceImplementation.versionInt,
+                    work.connectable.rssi,
+                    work.connectable.transmissionPower
+                )
+                characteristic.value = writedata
+                val writeSuccess = gatt.writeCharacteristic(characteristic)
+                CentralLog.i(
+                    TAG,
+                    "Attempt to write characteristic to our service on ${gatt.device.address}: $writeSuccess"
+                )
 
             } else {
                 CentralLog.w(

@@ -32,8 +32,6 @@ import io.bluetrace.opentrace.bluetooth.gatt.ACTION_RECEIVED_STATUS
 import io.bluetrace.opentrace.bluetooth.gatt.ACTION_RECEIVED_STREETPASS
 import io.bluetrace.opentrace.bluetooth.gatt.STATUS
 import io.bluetrace.opentrace.bluetooth.gatt.STREET_PASS
-import io.bluetrace.opentrace.idmanager.TempIDManager
-import io.bluetrace.opentrace.idmanager.TemporaryID
 import io.bluetrace.opentrace.logging.CentralLog
 import io.bluetrace.opentrace.notifications.NotificationTemplates
 import io.bluetrace.opentrace.permissions.RequestFileWritePermission
@@ -109,7 +107,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
 
         setupNotifications()
         functions = FirebaseFunctions.getInstance(BuildConfig.FIREBASE_REGION)
-        broadcastMessage = TempIDManager.retrieveTemporaryID(this.applicationContext)
     }
 
     fun teardown() {
@@ -121,7 +118,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
 
         commandHandler.removeCallbacksAndMessages(null)
 
-        Utils.cancelBMUpdateCheck(this.applicationContext)
         Utils.cancelNextScan(this.applicationContext)
         Utils.cancelNextAdvertise(this.applicationContext)
     }
@@ -271,7 +267,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                 setupService()
                 Utils.scheduleNextHealthCheck(this.applicationContext, healthCheckInterval)
                 Utils.scheduleRepeatingPurge(this.applicationContext, purgeInterval)
-                Utils.scheduleBMUpdateCheck(this.applicationContext, bmCheckInterval)
                 actionStart()
             }
 
@@ -288,11 +283,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                 if (doWork) {
                     actionAdvertise()
                 }
-            }
-
-            Command.ACTION_UPDATE_BM -> {
-                Utils.scheduleBMUpdateCheck(this.applicationContext, bmCheckInterval)
-                actionUpdateBm()
             }
 
             Command.ACTION_STOP -> {
@@ -333,40 +323,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     private fun actionStart() {
         CentralLog.d(TAG, "Action Start")
 
-        TempIDManager.getTemporaryIDs(this, functions)
-            .addOnCompleteListener {
-                CentralLog.d(TAG, "Get TemporaryIDs completed")
-                //this will run whether it starts or fails.
-                var fetch = TempIDManager.retrieveTemporaryID(this.applicationContext)
-                fetch?.let {
-                    broadcastMessage = it
-                    setupCycles()
-                }
-            }
-    }
-
-    fun actionUpdateBm() {
-
-        if (TempIDManager.needToUpdate(this.applicationContext) || broadcastMessage == null) {
-            CentralLog.i(TAG, "[TempID] Need to update TemporaryID in actionUpdateBM")
-            //need to pull new BM
-            TempIDManager.getTemporaryIDs(this, functions)
-                .addOnCompleteListener {
-                    //this will run whether it starts or fails.
-                    var fetch = TempIDManager.retrieveTemporaryID(this.applicationContext)
-                    fetch?.let {
-                        CentralLog.i(TAG, "[TempID] Updated Temp ID")
-                        broadcastMessage = it
-                    }
-
-                    if (fetch == null) {
-                        CentralLog.e(TAG, "[TempID] Failed to fetch new Temp ID")
-                    }
-                }
-        } else {
-            CentralLog.i(TAG, "[TempID] Don't need to update Temp ID in actionUpdateBM")
-        }
-
+        setupCycles()
     }
 
     fun calcPhaseShift(min: Long, max: Long): Long {
@@ -374,22 +331,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     }
 
     private fun actionScan() {
-        if (TempIDManager.needToUpdate(this.applicationContext) || broadcastMessage == null) {
-            CentralLog.i(TAG, "[TempID] Need to update TemporaryID in actionScan")
-            //need to pull new BM
-            TempIDManager.getTemporaryIDs(this.applicationContext, functions)
-                .addOnCompleteListener {
-                    //this will run whether it starts or fails.
-                    var fetch = TempIDManager.retrieveTemporaryID(this.applicationContext)
-                    fetch?.let {
-                        broadcastMessage = it
-                        performScan()
-                    }
-                }
-        } else {
-            CentralLog.i(TAG, "[TempID] Don't need to update Temp ID in actionScan")
-            performScan()
-        }
+        performScan()
     }
 
     private fun actionAdvertise() {
@@ -691,8 +633,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         ACTION_STOP(2, "STOP"),
         ACTION_ADVERTISE(3, "ADVERTISE"),
         ACTION_SELF_CHECK(4, "SELF_CHECK"),
-        ACTION_UPDATE_BM(5, "UPDATE_BM"),
-        ACTION_PURGE(6, "PURGE");
+        ACTION_PURGE(5, "PURGE");
 
         companion object {
             private val types = values().associate { it.index to it }
@@ -725,8 +666,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         val PENDING_WIZARD_REQ_CODE = 10
         val PENDING_BM_UPDATE = 11
         val PENDING_PURGE_CODE = 12
-
-        var broadcastMessage: TemporaryID? = null
 
         //should be more than advertising gap?
         val scanDuration: Long = BuildConfig.SCAN_DURATION

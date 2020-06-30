@@ -22,7 +22,7 @@ class V2Peripheral : PeripheralInterface {
     override fun prepareReadRequestData(protocolVersion: Int): ByteArray {
         return V2ReadRequestPayload(
             v = protocolVersion,
-            id = TracerApp.thisDeviceMsg(),
+            id = "TODO", //TracerApp.thisDeviceMsg(),
             o = TracerApp.ORG,
             peripheral = TracerApp.asPeripheralDevice()
         ).getPayload()
@@ -65,7 +65,7 @@ class V2Central : CentralInterface {
     ): ByteArray {
         return V2WriteRequestPayload(
             v = protocolVersion,
-            id = TracerApp.thisDeviceMsg(),
+            id = "TODO", //TracerApp.thisDeviceMsg(),
             o = TracerApp.ORG,
             central = TracerApp.asCentralDevice(),
             rs = rssi
