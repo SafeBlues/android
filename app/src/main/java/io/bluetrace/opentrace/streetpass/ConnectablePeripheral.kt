@@ -24,11 +24,6 @@ data class CentralDevice(
 
 @Parcelize
 data class ConnectionRecord(
-    val version: Int,
-
-    val msg: String,
-    val org: String,
-
     val peripheral: PeripheralDevice,
     val central: CentralDevice,
 

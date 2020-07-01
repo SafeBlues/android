@@ -45,3 +45,12 @@ message InfectionReport {
 message StrandUpdate {
     repeated Strand strands = 1;
 }
+
+message ShareList {
+    repeated int64 current_infected_strands = 1;
+
+    int64 tempID = 2;
+    string mp = 3;
+    string mc = 4;
+    int32 rssi = 5;
+}

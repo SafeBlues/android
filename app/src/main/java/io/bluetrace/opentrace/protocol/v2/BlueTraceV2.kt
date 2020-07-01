@@ -8,6 +8,7 @@ import io.bluetrace.opentrace.protocol.PeripheralInterface
 import io.bluetrace.opentrace.streetpass.CentralDevice
 import io.bluetrace.opentrace.streetpass.ConnectionRecord
 import io.bluetrace.opentrace.streetpass.PeripheralDevice
+import org.safeblues.api.SafeBluesProtos
 
 class BlueTraceV2 : BlueTraceProtocol(
     versionInt = 2,
@@ -20,12 +21,9 @@ class V2Peripheral : PeripheralInterface {
     private val TAG = "V2Peripheral"
 
     override fun prepareReadRequestData(protocolVersion: Int): ByteArray {
-        return V2ReadRequestPayload(
-            v = protocolVersion,
-            id = "TODO", //TracerApp.thisDeviceMsg(),
-            o = TracerApp.ORG,
-            peripheral = TracerApp.asPeripheralDevice()
-        ).getPayload()
+        return SafeBluesProtos.ShareList.newBuilder().apply {
+            tempID = 42
+        }.build().toByteArray()
     }
 
     override fun processWriteRequestDataReceived(
@@ -33,18 +31,12 @@ class V2Peripheral : PeripheralInterface {
         centralAddress: String
     ): ConnectionRecord? {
         try {
-            val dataWritten =
-                V2WriteRequestPayload.fromPayload(
-                    dataReceived
-                )
+            val dataWritten = SafeBluesProtos.ShareList.parseFrom(dataReceived)
 
             return ConnectionRecord(
-                version = dataWritten.v,
-                msg = dataWritten.id,
-                org = dataWritten.o,
                 peripheral = TracerApp.asPeripheralDevice(),
                 central = CentralDevice(dataWritten.mc, centralAddress),
-                rssi = dataWritten.rs,
+                rssi = dataWritten.rssi,
                 txPower = null
             )
         } catch (e: Throwable) {
@@ -63,13 +55,10 @@ class V2Central : CentralInterface {
         rssi: Int,
         txPower: Int?
     ): ByteArray {
-        return V2WriteRequestPayload(
-            v = protocolVersion,
-            id = "TODO", //TracerApp.thisDeviceMsg(),
-            o = TracerApp.ORG,
-            central = TracerApp.asCentralDevice(),
-            rs = rssi
-        ).getPayload()
+        return SafeBluesProtos.ShareList.newBuilder().apply {
+            this.tempID = 43
+            this.rssi = rssi
+        }.build().toByteArray()
     }
 
     override fun processReadRequestDataReceived(
@@ -79,17 +68,12 @@ class V2Central : CentralInterface {
         txPower: Int?
     ): ConnectionRecord? {
         try {
-            val readData =
-                V2ReadRequestPayload.fromPayload(
-                    dataRead
-                )
+            val readData = SafeBluesProtos.ShareList.parseFrom(dataRead)
+
             var peripheral =
                 PeripheralDevice(readData.mp, peripheralAddress)
 
             var connectionRecord = ConnectionRecord(
-                version = readData.v,
-                msg = readData.id,
-                org = readData.o,
                 peripheral = peripheral,
                 central = TracerApp.asCentralDevice(),
                 rssi = rssi,
