@@ -1,17 +1,16 @@
-package io.bluetrace.opentrace.streetpass.persistence
+package org.safeblues.android.persistence
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import androidx.sqlite.db.SupportSQLiteQuery
 
 @Dao
 interface StrandDao {
 
     @Query("SELECT * from strands ORDER BY start_time ASC")
-    fun getStrands(): LiveData<List<StreetPassRecord>>
+    fun getStrands(): LiveData<List<Strand>>
 
     @Query("SELECT * from strands WHERE start_time > :time AND end_time < :time ORDER BY start_time ASC")
-    fun getActiveStrands(time: Long): List<StreetPassRecord>
+    fun getActiveStrands(time: Long): List<Strand>
 
     @Query("DELETE FROM strands")
     fun nukeDb()
@@ -20,6 +19,6 @@ interface StrandDao {
     suspend fun purgeOldRecords(before: Long)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(record: StreetPassRecord)
+    suspend fun insert(record: Strand)
 
 }

@@ -1,4 +1,4 @@
-package io.bluetrace.opentrace.db.persistence
+package org.safeblues.android.persistence
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

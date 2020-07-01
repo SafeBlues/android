@@ -1,0 +1,82 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "f51baba390b09b25b905e6cb75569f8e",
+    "entities": [
+      {
+        "tableName": "strands",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER NOT NULL, `strand_id` INTEGER NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER NOT NULL, `seeding_probability` REAL NOT NULL, `infection_probability` REAL NOT NULL, `incubation_period_days` REAL NOT NULL, `infectious_period_days` REAL NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "strand_id",
+            "columnName": "strand_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start_time",
+            "columnName": "start_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "end_time",
+            "columnName": "end_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "seeding_probability",
+            "columnName": "seeding_probability",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infection_probability",
+            "columnName": "infection_probability",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "incubation_period_days",
+            "columnName": "incubation_period_days",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infectious_period_days",
+            "columnName": "infectious_period_days",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f51baba390b09b25b905e6cb75569f8e')"
+    ]
+  }
+}
