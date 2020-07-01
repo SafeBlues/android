@@ -4,9 +4,10 @@ import android.bluetooth.*
 import android.bluetooth.BluetoothGatt.GATT_FAILURE
 import android.bluetooth.BluetoothGatt.GATT_SUCCESS
 import android.content.Context
+import io.bluetrace.opentrace.BuildConfig
 import io.bluetrace.opentrace.Utils
 import io.bluetrace.opentrace.logging.CentralLog
-import io.bluetrace.opentrace.protocol.BlueTrace
+import io.bluetrace.opentrace.protocol.v2.BlueTraceV2
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -64,13 +65,13 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
 
                 CentralLog.i(TAG, "onCharacteristicReadRequest from ${device.address}")
 
-                if (BlueTrace.supportsCharUUID(characteristic?.uuid)) {
+                if (characteristic?.uuid == UUID.fromString(BuildConfig.V2_CHARACTERISTIC_ID)) {
 
                     characteristic?.uuid?.let { charUUID ->
-                        val bluetraceImplementation = BlueTrace.getImplementation(charUUID)
+                        val bt = BlueTraceV2()
                         val base = readPayloadMap.getOrPut(device.address, {
-                            bluetraceImplementation.peripheral.prepareReadRequestData(
-                                bluetraceImplementation.versionInt
+                            bt.peripheral.prepareReadRequestData(
+                                bt.versionInt
                             )
                         })
                         val value = base.copyOfRange(offset, base.size)
@@ -123,7 +124,7 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
                     "onCharacteristicWriteRequest from ${device.address} - $requestId - $offset"
                 )
 
-                if (BlueTrace.supportsCharUUID(characteristic.uuid)) {
+                if (characteristic.uuid == UUID.fromString(BuildConfig.V2_CHARACTERISTIC_ID)) {
                     deviceCharacteristicMap[device.address] = characteristic.uuid
                     var valuePassed = ""
                     value?.let {
@@ -245,10 +246,8 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
                 data?.let {
                     try {
                         device.let {
-                            val bluetraceImplementation = BlueTrace.getImplementation(charUUID)
-
                             val connectionRecord =
-                                bluetraceImplementation.peripheral.processWriteRequestDataReceived(
+                                BlueTraceV2().peripheral.processWriteRequestDataReceived(
                                     data,
                                     device.address
                                 )

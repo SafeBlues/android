@@ -13,7 +13,7 @@ import io.bluetrace.opentrace.bluetooth.gatt.ACTION_DEVICE_PROCESSED
 import io.bluetrace.opentrace.bluetooth.gatt.CONNECTION_DATA
 import io.bluetrace.opentrace.bluetooth.gatt.DEVICE_ADDRESS
 import io.bluetrace.opentrace.logging.CentralLog
-import io.bluetrace.opentrace.protocol.BlueTrace
+import io.bluetrace.opentrace.protocol.v2.BlueTraceV2
 import io.bluetrace.opentrace.services.BluetoothMonitoringService
 import io.bluetrace.opentrace.services.BluetoothMonitoringService.Companion.blacklistDuration
 import io.bluetrace.opentrace.services.BluetoothMonitoringService.Companion.maxQueueTime
@@ -537,15 +537,12 @@ class StreetPassWorker(val context: Context) {
                         "onCharacteristicRead: ${work.device.address} - [${work.connectable.rssi}]"
                     )
 
-                    if (BlueTrace.supportsCharUUID(characteristic.uuid)) {
-
+                    if (characteristic.uuid == UUID.fromString(BuildConfig.V2_CHARACTERISTIC_ID)) {
                         try {
-                            val bluetraceImplementation =
-                                BlueTrace.getImplementation(characteristic.uuid)
                             val dataBytes = characteristic.value
 
                             val connectionRecord =
-                                bluetraceImplementation
+                                BlueTraceV2()
                                     .central
                                     .processReadRequestDataReceived(
                                         dataRead = dataBytes,
@@ -579,13 +576,12 @@ class StreetPassWorker(val context: Context) {
             }
 
             //attempt to do a write
-            if (BlueTrace.supportsCharUUID(characteristic.uuid)) {
-                val bluetraceImplementation = BlueTrace.getImplementation(characteristic.uuid)
-
+            if (characteristic.uuid == UUID.fromString(BuildConfig.V2_CHARACTERISTIC_ID)) {
                 //may have failed to read, can try to write
                 //we are writing as the central device
-                var writedata = bluetraceImplementation.central.prepareWriteRequestData(
-                    bluetraceImplementation.versionInt,
+                val bt = BlueTraceV2()
+                var writedata = bt.central.prepareWriteRequestData(
+                    bt.versionInt,
                     work.connectable.rssi,
                     work.connectable.transmissionPower
                 )
