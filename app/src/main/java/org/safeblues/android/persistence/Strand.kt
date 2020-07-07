@@ -6,8 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "strands")
 class Strand constructor(
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "strand_id")
-    val strand_id: Int,
+    val strand_id: Long,
 
     @ColumnInfo(name = "start_time")
     val start_time: Long,
@@ -27,12 +28,6 @@ class Strand constructor(
     @ColumnInfo(name = "infectious_period_days")
     val infectious_period_days: Double
 ) {
-
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    var id: Int = 0
-
     @ColumnInfo(name = "timestamp")
     var timestamp: Long = System.currentTimeMillis()
-
 }

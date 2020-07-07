@@ -2,18 +2,12 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f51baba390b09b25b905e6cb75569f8e",
+    "identityHash": "aef97799f2c855859de89bef1813bb36",
     "entities": [
       {
         "tableName": "strands",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER NOT NULL, `strand_id` INTEGER NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER NOT NULL, `seeding_probability` REAL NOT NULL, `infection_probability` REAL NOT NULL, `incubation_period_days` REAL NOT NULL, `infectious_period_days` REAL NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`timestamp` INTEGER NOT NULL, `strand_id` INTEGER NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER NOT NULL, `seeding_probability` REAL NOT NULL, `infection_probability` REAL NOT NULL, `incubation_period_days` REAL NOT NULL, `infectious_period_days` REAL NOT NULL, PRIMARY KEY(`strand_id`))",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
@@ -65,9 +59,9 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "id"
+            "strand_id"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -76,7 +70,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f51baba390b09b25b905e6cb75569f8e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aef97799f2c855859de89bef1813bb36')"
     ]
   }
 }

@@ -10,6 +10,7 @@ import android.os.PowerManager
 import android.text.Spannable
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -34,6 +35,9 @@ import io.bluetrace.opentrace.logging.CentralLog
 import io.bluetrace.opentrace.onboarding.OnboardingActivity
 import io.bluetrace.opentrace.status.persistence.StatusRecord
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordDatabase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.safeblues.android.API
 
 private const val REQUEST_ENABLE_BT = 123
 private const val PERMISSION_REQUEST_ACCESS_LOCATION = 456
@@ -79,6 +83,14 @@ class HomeFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        //sync_strands_button.setOnClickListener {
+        //    syncStrands()
+        //}
+
+        sync_strands_button.setOnClickListener {
+            syncStrands(it)
+        }
 
         share_card_view.setOnClickListener { shareThisApp() }
         animation_view.setOnClickListener {
@@ -195,6 +207,13 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         Preference.unregisterListener(activity!!.applicationContext, listener)
         lastKnownScanningStarted.removeObservers(viewLifecycleOwner)
+    }
+
+    private fun syncStrands(view: View) {
+        val api = API
+        GlobalScope.launch { // or whatever
+            api.syncStrandsWithServer(view.context)
+        }
     }
 
     private fun shareThisApp() {

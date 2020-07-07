@@ -9,7 +9,7 @@ interface StrandDao {
     @Query("SELECT * from strands ORDER BY start_time ASC")
     fun getStrands(): LiveData<List<Strand>>
 
-    @Query("SELECT * from strands WHERE start_time > :time AND end_time < :time ORDER BY start_time ASC")
+    @Query("SELECT * from strands WHERE start_time < :time AND end_time > :time ORDER BY start_time ASC")
     fun getActiveStrands(time: Long): List<Strand>
 
     @Query("DELETE FROM strands")
