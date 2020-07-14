@@ -579,12 +579,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
 
             if (ACTION_RECEIVED_STREETPASS == intent.action) {
                 var connRecord: SafeBluesProtos.ConnRec = SafeBluesProtos.ConnRec.parseFrom(intent.getByteArrayExtra(STREET_PASS))
-                CentralLog.d(
-                    TAG,
-                    "StreetPass received: $connRecord"
-                )
-
-                // QQQQ
+                CentralLog.d(TAG, "ConnRec received: $connRecord")
 
                 val record = StreetPassRecord(
                     v = 5, //connRecord.version,
@@ -688,7 +683,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         val infiniteScanning = false
         val infiniteAdvertising = false
 
-        val useBlacklist = true // TODO: should we not use this in safeblues?
+        val useBlacklist = false // TODO: should we not use this in safeblues?
         val bmValidityCheck = false
     }
 }
