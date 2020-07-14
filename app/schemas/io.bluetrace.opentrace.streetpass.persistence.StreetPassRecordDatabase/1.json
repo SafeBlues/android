@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9a95fc8ad88c160bf76c0ba4747db316",
+    "identityHash": "4746140d56d2a7ea49bfd3068988fee1",
     "entities": [
       {
         "tableName": "record_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER NOT NULL, `v` INTEGER NOT NULL, `msg` TEXT NOT NULL, `org` TEXT NOT NULL, `modelP` TEXT NOT NULL, `modelC` TEXT NOT NULL, `rssi` INTEGER NOT NULL, `txPower` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER NOT NULL, `shareList` BLOB NOT NULL, `firstSeen` INTEGER NOT NULL, `lastSeen` INTEGER NOT NULL, `modelP` TEXT NOT NULL, `modelC` TEXT NOT NULL, `rssi` INTEGER NOT NULL, `txPower` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -21,21 +21,21 @@
             "notNull": true
           },
           {
-            "fieldPath": "v",
-            "columnName": "v",
+            "fieldPath": "shareList",
+            "columnName": "shareList",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firstSeen",
+            "columnName": "firstSeen",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "msg",
-            "columnName": "msg",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "org",
-            "columnName": "org",
-            "affinity": "TEXT",
+            "fieldPath": "lastSeen",
+            "columnName": "lastSeen",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -108,7 +108,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9a95fc8ad88c160bf76c0ba4747db316')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4746140d56d2a7ea49bfd3068988fee1')"
     ]
   }
 }

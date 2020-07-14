@@ -582,9 +582,9 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                 CentralLog.d(TAG, "ConnRec received: $connRecord")
 
                 val record = StreetPassRecord(
-                    v = 5, //connRecord.version,
-                    msg = connRecord.shareList.toString(), //connRecord.msg,
-                    org = "NOOORG", //connRecord.org,
+                    shareList = connRecord.shareList.toByteArray(),
+                    firstSeen = 0,
+                    lastSeen = System.currentTimeMillis(),
                     modelP = connRecord.peripheral.model,
                     modelC = connRecord.central.model,
                     rssi = connRecord.rssi,

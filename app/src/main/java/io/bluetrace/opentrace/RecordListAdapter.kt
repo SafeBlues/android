@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecord
 import kotlinx.android.synthetic.main.recycler_view_item.view.*
 import io.bluetrace.opentrace.streetpass.view.StreetPassRecordViewModel
+import org.safeblues.api.SafeBluesProtos
 
 
 class RecordListAdapter internal constructor(context: Context) :
@@ -44,14 +45,14 @@ class RecordListAdapter internal constructor(context: Context) :
 
     override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
         val current = records[position]
-        holder.msgView.text = current.msg
+        holder.msgView.text = SafeBluesProtos.ShareList.parseFrom(current.shareList).toString()
         holder.modelCView.text = current.modelC
         holder.modelPView.text = current.modelP
         holder.findsView.text = "Detections: ${current.number}"
         val readableDate = Utils.getDate(current.timeStamp)
         holder.timestampView.text = readableDate
-        holder.version.text = "v: ${current.version}"
-        holder.org.text = "ORG: ${current.org}"
+        holder.version.text = "firstSeen: ${current.firstSeen}"
+        holder.org.text = "lastSeen: ${current.lastSeen}"
 
         holder.filterModelP.tag = current
         holder.filterModelC.tag = current
