@@ -592,10 +592,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                 )
 
                 launch {
-                    CentralLog.d(
-                        TAG,
-                        "Coroutine - Saving StreetPassRecord: ${Utils.getDate(record.timestamp)}"
-                    )
+                    CentralLog.d(TAG, "Coroutine - Saving StreetPassRecord: ${Utils.getDate(record.timestamp)}")
                     streetPassRecordStorage.saveRecord(record)
                 }
             }
