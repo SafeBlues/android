@@ -40,7 +40,6 @@ class V2Peripheral : PeripheralInterface {
             }.build()
             this.peripheral = TracerApp.getPeripheral()
             this.rssi = data.rssi
-            //this.txPower = null
         }.build()
     }
 }
