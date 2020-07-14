@@ -6,11 +6,12 @@ import android.content.Context
 import android.os.Build
 import com.google.gson.Gson
 import io.bluetrace.opentrace.logging.CentralLog
+import org.safeblues.api.SafeBluesProtos
 import kotlin.properties.Delegates
 
 class Work constructor(
     var device: BluetoothDevice,
-    var connectable: ConnectablePeripheral,
+    var connectable: SafeBluesProtos.ConnectableDevice,
     private val onWorkTimeoutListener: OnWorkTimeoutListener
 ) : Comparable<Work> {
     var timeStamp: Long by Delegates.notNull()

@@ -27,8 +27,7 @@ import io.bluetrace.opentrace.services.BluetoothMonitoringService.Companion.PEND
 import io.bluetrace.opentrace.services.BluetoothMonitoringService.Companion.PENDING_START
 import io.bluetrace.opentrace.status.Status
 import io.bluetrace.opentrace.streetpass.ACTION_DEVICE_SCANNED
-import io.bluetrace.opentrace.streetpass.ConnectablePeripheral
-import io.bluetrace.opentrace.streetpass.ConnectionRecord
+import org.safeblues.api.SafeBluesProtos
 import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -216,7 +215,7 @@ object Utils {
     fun broadcastDeviceScanned(
         context: Context,
         device: BluetoothDevice,
-        connectableBleDevice: ConnectablePeripheral
+        connectableBleDevice: SafeBluesProtos.ConnectableDevice
     ) {
         val intent = Intent(ACTION_DEVICE_SCANNED)
         intent.putExtra(BluetoothDevice.EXTRA_DEVICE, device)
@@ -231,7 +230,7 @@ object Utils {
     }
 
 
-    fun broadcastStreetPassReceived(context: Context, streetpass: ConnectionRecord) {
+    fun broadcastStreetPassReceived(context: Context, streetpass: SafeBluesProtos.ConnRec) {
         val intent = Intent(ACTION_RECEIVED_STREETPASS)
         intent.putExtra(STREET_PASS, streetpass)
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)

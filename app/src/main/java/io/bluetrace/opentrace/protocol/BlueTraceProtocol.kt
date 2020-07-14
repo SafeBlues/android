@@ -1,6 +1,6 @@
 package io.bluetrace.opentrace.protocol
 
-import io.bluetrace.opentrace.streetpass.ConnectionRecord
+import org.safeblues.api.SafeBluesProtos
 
 open class BlueTraceProtocol(
     val versionInt: Int,
@@ -14,7 +14,7 @@ interface PeripheralInterface {
     fun processWriteRequestDataReceived(
         dataWritten: ByteArray,
         centralAddress: String
-    ): ConnectionRecord?
+    ): SafeBluesProtos.ConnRec
 }
 
 interface CentralInterface {
@@ -25,5 +25,5 @@ interface CentralInterface {
         peripheralAddress: String,
         rssi: Int,
         txPower: Int?
-    ): ConnectionRecord?
+    ): SafeBluesProtos.ConnRec
 }

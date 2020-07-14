@@ -3,10 +3,7 @@ package io.bluetrace.opentrace
 import android.app.Application
 import android.content.Context
 import android.os.Build
-import io.bluetrace.opentrace.logging.CentralLog
-import io.bluetrace.opentrace.services.BluetoothMonitoringService
-import io.bluetrace.opentrace.streetpass.CentralDevice
-import io.bluetrace.opentrace.streetpass.PeripheralDevice
+import org.safeblues.api.SafeBluesProtos
 
 class TracerApp : Application() {
 
@@ -22,12 +19,18 @@ class TracerApp : Application() {
 
         lateinit var AppContext: Context
 
-        fun asPeripheralDevice(): PeripheralDevice {
-            return PeripheralDevice(Build.MODEL, "SELF")
+        fun getPeripheral(): SafeBluesProtos.Device {
+            return SafeBluesProtos.Device.newBuilder().apply {
+                this.model = Build.MODEL
+                this.address = "SELF_ADDR_P"
+            }.build()
         }
 
-        fun asCentralDevice(): CentralDevice {
-            return CentralDevice(Build.MODEL, "SELF")
+        fun getCentral(): SafeBluesProtos.Device {
+            return SafeBluesProtos.Device.newBuilder().apply {
+                this.model = Build.MODEL
+                this.address = "SELF_ADDR_C"
+            }.build()
         }
     }
 }

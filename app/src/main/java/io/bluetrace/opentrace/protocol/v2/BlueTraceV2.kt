@@ -5,9 +5,8 @@ import io.bluetrace.opentrace.logging.CentralLog
 import io.bluetrace.opentrace.protocol.BlueTraceProtocol
 import io.bluetrace.opentrace.protocol.CentralInterface
 import io.bluetrace.opentrace.protocol.PeripheralInterface
-import io.bluetrace.opentrace.streetpass.CentralDevice
-import io.bluetrace.opentrace.streetpass.ConnectionRecord
-import io.bluetrace.opentrace.streetpass.PeripheralDevice
+import org.safeblues.android.API
+import org.safeblues.api.SafeBluesProtos
 
 class BlueTraceV2 : BlueTraceProtocol(
     versionInt = 2,
@@ -20,37 +19,26 @@ class V2Peripheral : PeripheralInterface {
     private val TAG = "V2Peripheral"
 
     override fun prepareReadRequestData(protocolVersion: Int): ByteArray {
-        return V2ReadRequestPayload(
-            v = protocolVersion,
-            id = "TODO", //TracerApp.thisDeviceMsg(),
-            o = TracerApp.ORG,
-            peripheral = TracerApp.asPeripheralDevice()
-        ).getPayload()
+        // they're trying to read our characteristic (data)
+        return SafeBluesProtos.ReadReq.newBuilder().apply {
+            this.peripheral = TracerApp.getPeripheral()
+            this.shareList = API.getShareList(TracerApp.AppContext)
+        }.build().toByteArray()
     }
 
     override fun processWriteRequestDataReceived(
         dataReceived: ByteArray,
         centralAddress: String
-    ): ConnectionRecord? {
-        try {
-            val dataWritten =
-                V2WriteRequestPayload.fromPayload(
-                    dataReceived
-                )
-
-            return ConnectionRecord(
-                version = dataWritten.v,
-                msg = dataWritten.id,
-                org = dataWritten.o,
-                peripheral = TracerApp.asPeripheralDevice(),
-                central = CentralDevice(dataWritten.mc, centralAddress),
-                rssi = dataWritten.rs,
-                txPower = null
-            )
-        } catch (e: Throwable) {
-            CentralLog.e(TAG, "Failed to deserialize write payload ${e.message}")
-        }
-        return null
+    ): SafeBluesProtos.ConnRec {
+        // the connected device sent us their data (dataReceived), now turn that into a ConnRec
+        val data = SafeBluesProtos.WriteReq.parseFrom(dataReceived)
+        return SafeBluesProtos.ConnRec.newBuilder().apply {
+            this.shareList = data.shareList
+            this.central = data.central
+            this.peripheral = TracerApp.getPeripheral()
+            this.rssi = data.rssi
+            //this.txPower = null
+        }.build()
     }
 }
 
@@ -63,13 +51,10 @@ class V2Central : CentralInterface {
         rssi: Int,
         txPower: Int?
     ): ByteArray {
-        return V2WriteRequestPayload(
-            v = protocolVersion,
-            id = "TODO", //TracerApp.thisDeviceMsg(),
-            o = TracerApp.ORG,
-            central = TracerApp.asCentralDevice(),
-            rs = rssi
-        ).getPayload()
+        return SafeBluesProtos.WriteReq.newBuilder().apply {
+            this.central = TracerApp.getCentral()
+            this.rssi = rssi
+        }.build().toByteArray()
     }
 
     override fun processReadRequestDataReceived(
@@ -77,29 +62,14 @@ class V2Central : CentralInterface {
         peripheralAddress: String,
         rssi: Int,
         txPower: Int?
-    ): ConnectionRecord? {
-        try {
-            val readData =
-                V2ReadRequestPayload.fromPayload(
-                    dataRead
-                )
-            var peripheral =
-                PeripheralDevice(readData.mp, peripheralAddress)
-
-            var connectionRecord = ConnectionRecord(
-                version = readData.v,
-                msg = readData.id,
-                org = readData.o,
-                peripheral = peripheral,
-                central = TracerApp.asCentralDevice(),
-                rssi = rssi,
-                txPower = txPower
-            )
-            return connectionRecord
-        } catch (e: Throwable) {
-            CentralLog.e(TAG, "Failed to deserialize read payload ${e.message}")
-        }
-
-        return null
+    ): SafeBluesProtos.ConnRec {
+        val data = SafeBluesProtos.ReadReq.parseFrom(dataRead)
+        return SafeBluesProtos.ConnRec.newBuilder().apply {
+            this.shareList = data.shareList
+            this.central = TracerApp.getCentral()
+            this.peripheral = data.peripheral
+            this.rssi = rssi
+            this.txPower = txPower ?: 0
+        }.build()
     }
 }

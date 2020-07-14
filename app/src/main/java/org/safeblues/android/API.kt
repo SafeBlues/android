@@ -48,6 +48,16 @@ object API {
         Log.i(TAG, "Active strands: " + strandDao.getActiveStrands(System.currentTimeMillis()).toString())
     }
 
+    fun getShareList(context: Context): SafeBluesProtos.ShareList {
+        val ret = SafeBluesProtos.ShareList.newBuilder()
+
+        var strandDao = StrandDatabase.getDatabase(context).strandDao()
+        for (strand in strandDao.getActiveStrands(System.currentTimeMillis())) {
+            ret.addStrands(strand.strand_id)
+        }
+        return ret.build()
+    }
+
     suspend fun ping() {
         val req = SafeBluesProtos.Ping.newBuilder().apply {
             nonce = 32

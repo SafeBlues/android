@@ -38,12 +38,12 @@ import io.bluetrace.opentrace.permissions.RequestFileWritePermission
 import io.bluetrace.opentrace.status.Status
 import io.bluetrace.opentrace.status.persistence.StatusRecord
 import io.bluetrace.opentrace.status.persistence.StatusRecordStorage
-import io.bluetrace.opentrace.streetpass.ConnectionRecord
 import io.bluetrace.opentrace.streetpass.StreetPassScanner
 import io.bluetrace.opentrace.streetpass.StreetPassServer
 import io.bluetrace.opentrace.streetpass.StreetPassWorker
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecord
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordStorage
+import org.safeblues.api.SafeBluesProtos
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
@@ -578,30 +578,30 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         override fun onReceive(context: Context, intent: Intent) {
 
             if (ACTION_RECEIVED_STREETPASS == intent.action) {
-                var connRecord: ConnectionRecord = intent.getParcelableExtra(STREET_PASS)
+                var connRecord: SafeBluesProtos.ConnRec = SafeBluesProtos.ConnRec.parseFrom(intent.getByteArrayExtra(STREET_PASS))
                 CentralLog.d(
                     TAG,
                     "StreetPass received: $connRecord"
                 )
 
-                if (connRecord.msg.isNotEmpty()) {
-                    val record = StreetPassRecord(
-                        v = connRecord.version,
-                        msg = connRecord.msg,
-                        org = connRecord.org,
-                        modelP = connRecord.peripheral.modelP,
-                        modelC = connRecord.central.modelC,
-                        rssi = connRecord.rssi,
-                        txPower = connRecord.txPower
-                    )
+                // QQQQ
 
-                    launch {
-                        CentralLog.d(
-                            TAG,
-                            "Coroutine - Saving StreetPassRecord: ${Utils.getDate(record.timestamp)}"
-                        )
-                        streetPassRecordStorage.saveRecord(record)
-                    }
+                val record = StreetPassRecord(
+                    v = 5, //connRecord.version,
+                    msg = connRecord.shareList.toString(), //connRecord.msg,
+                    org = "NOOORG", //connRecord.org,
+                    modelP = connRecord.peripheral.model,
+                    modelC = connRecord.central.model,
+                    rssi = connRecord.rssi,
+                    txPower = connRecord.txPower
+                )
+
+                launch {
+                    CentralLog.d(
+                        TAG,
+                        "Coroutine - Saving StreetPassRecord: ${Utils.getDate(record.timestamp)}"
+                    )
+                    streetPassRecordStorage.saveRecord(record)
                 }
             }
         }
@@ -688,7 +688,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         val infiniteScanning = false
         val infiniteAdvertising = false
 
-        val useBlacklist = true
+        val useBlacklist = true // TODO: should we not use this in safeblues?
         val bmValidityCheck = false
     }
 }

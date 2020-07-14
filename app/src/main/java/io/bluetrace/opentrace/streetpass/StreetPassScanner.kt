@@ -10,6 +10,7 @@ import io.bluetrace.opentrace.bluetooth.BLEScanner
 import io.bluetrace.opentrace.logging.CentralLog
 import io.bluetrace.opentrace.services.BluetoothMonitoringService.Companion.infiniteScanning
 import io.bluetrace.opentrace.status.Status
+import org.safeblues.api.SafeBluesProtos
 import kotlin.properties.Delegates
 
 class StreetPassScanner constructor(
@@ -89,13 +90,10 @@ class StreetPassScanner constructor(
                     }
                 }
 
-                var manuData: ByteArray =
-                    scanResult.scanRecord?.getManufacturerSpecificData(1023) ?: "N.A".toByteArray()
-                var manuString = String(manuData, Charsets.UTF_8)
-
-                var connectable = ConnectablePeripheral(manuString, txPower, rssi)
-
-                CentralLog.i(TAG, "Scanned: ${manuString} - ${device.address}")
+                var connectable = SafeBluesProtos.ConnectableDevice.newBuilder().apply {
+                    this.rssi = rssi
+                    this.txPower = txPower ?: 0
+                }.build()
 
                 Utils.broadcastDeviceScanned(context, device, connectable)
             }

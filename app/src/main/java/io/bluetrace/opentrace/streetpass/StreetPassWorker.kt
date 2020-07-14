@@ -18,6 +18,7 @@ import io.bluetrace.opentrace.services.BluetoothMonitoringService
 import io.bluetrace.opentrace.services.BluetoothMonitoringService.Companion.blacklistDuration
 import io.bluetrace.opentrace.services.BluetoothMonitoringService.Companion.maxQueueTime
 import io.bluetrace.opentrace.services.BluetoothMonitoringService.Companion.useBlacklist
+import org.safeblues.api.SafeBluesProtos
 import java.util.*
 import java.util.concurrent.PriorityBlockingQueue
 
@@ -548,7 +549,7 @@ class StreetPassWorker(val context: Context) {
                                         dataRead = dataBytes,
                                         peripheralAddress = work.device.address,
                                         rssi = work.connectable.rssi,
-                                        txPower = work.connectable.transmissionPower
+                                        txPower = work.connectable.txPower
                                     )
 
                             //if the deserializing was a success, connectionRecord will not be null, save it
@@ -583,7 +584,7 @@ class StreetPassWorker(val context: Context) {
                 var writedata = bt.central.prepareWriteRequestData(
                     bt.versionInt,
                     work.connectable.rssi,
-                    work.connectable.transmissionPower
+                    work.connectable.txPower
                 )
                 characteristic.value = writedata
                 val writeSuccess = gatt.writeCharacteristic(characteristic)
@@ -683,8 +684,8 @@ class StreetPassWorker(val context: Context) {
                     //get data from extras
                     val device: BluetoothDevice? =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                    val connectable: ConnectablePeripheral? =
-                        intent.getParcelableExtra(CONNECTION_DATA)
+                    val connectable: SafeBluesProtos.ConnectableDevice =
+                        SafeBluesProtos.ConnectableDevice.parseFrom(intent.getByteArrayExtra(CONNECTION_DATA))
 
                     val devicePresent = device != null
                     val connectablePresent = connectable != null

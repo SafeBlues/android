@@ -45,3 +45,48 @@ message InfectionReport {
 message StrandUpdate {
     repeated Strand strands = 1;
 }
+
+// These are shipped around internally as intents
+
+message ShareList {
+    repeated int64 strands = 1;
+}
+
+message ConnectableDevice {
+    int32 rssi = 1;
+    int32 txPower = 2;
+}
+
+message Device {
+    string model = 1;
+    string address = 2;
+}
+
+message ReadReq {
+    ShareList share_list = 1;
+
+    Device peripheral = 2;
+
+    int32 rssi = 3;
+    int32 txPower = 4;
+}
+
+message WriteReq {
+    ShareList share_list = 1;
+
+    Device central = 2;
+
+    int32 rssi = 4;
+    int32 txPower = 5;
+}
+
+message ConnRec {
+    // their share list
+    ShareList share_list = 1;
+
+    Device central = 2;
+    Device peripheral = 3;
+
+    int32 rssi = 4;
+    int32 txPower = 5;
+}

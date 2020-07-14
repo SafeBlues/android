@@ -30,7 +30,6 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
         //in order to handle many connections from different mac addresses
         val writeDataPayload: MutableMap<String, ByteArray> = HashMap()
         val readPayloadMap: MutableMap<String, ByteArray> = HashMap()
-        val deviceCharacteristicMap: MutableMap<String, UUID> = HashMap()
 
         override fun onConnectionStateChange(device: BluetoothDevice?, status: Int, newState: Int) {
             when (newState) {
@@ -75,13 +74,7 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
                             )
                         })
                         val value = base.copyOfRange(offset, base.size)
-                        CentralLog.i(
-                            TAG,
-                            "onCharacteristicReadRequest from ${device.address} - $requestId- $offset - ${String(
-                                value,
-                                Charsets.UTF_8
-                            )}"
-                        )
+                        CentralLog.i(TAG, "onCharacteristicReadRequest from ${device.address} - $requestId- $offset - ${String(value, Charsets.UTF_8)}")
                         bluetoothGattServer?.sendResponse(
                             device,
                             requestId,
@@ -125,7 +118,6 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
                 )
 
                 if (characteristic.uuid == UUID.fromString(BuildConfig.V2_CHARACTERISTIC_ID)) {
-                    deviceCharacteristicMap[device.address] = characteristic.uuid
                     var valuePassed = ""
                     value?.let {
                         valuePassed = String(value, Charsets.UTF_8)
@@ -210,13 +202,7 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
             data.let { dataBuffer ->
 
                 if (dataBuffer != null) {
-                    CentralLog.i(
-                        TAG,
-                        "onExecuteWrite - $requestId- ${device.address} - ${String(
-                            dataBuffer,
-                            Charsets.UTF_8
-                        )}"
-                    )
+                    CentralLog.i(TAG, "onExecuteWrite - $requestId- ${device.address} - ${String(dataBuffer, Charsets.UTF_8)}")
                     saveDataReceived(device)
                     bluetoothGattServer?.sendResponse(
                         device,
@@ -239,35 +225,16 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
         }
 
         fun saveDataReceived(device: BluetoothDevice) {
-            var data = writeDataPayload[device.address]
-            var charUUID = deviceCharacteristicMap[device.address]
-
-            charUUID?.let {
-                data?.let {
-                    try {
-                        device.let {
-                            val connectionRecord =
-                                BlueTraceV2().peripheral.processWriteRequestDataReceived(
-                                    data,
-                                    device.address
-                                )
-                            //connectionRecord will not be null if the deserializing was a success, save it
-                            connectionRecord?.let {
-                                Utils.broadcastStreetPassReceived(
-                                    context,
-                                    connectionRecord
-                                )
-                            }
-                        }
-                    } catch (e: Throwable) {
-                        CentralLog.e(TAG, "Failed to process write payload - ${e.message}")
-                    }
-
-                    Utils.broadcastDeviceProcessed(context, device.address)
-                    writeDataPayload.remove(device.address)
-                    readPayloadMap.remove(device.address)
-                    deviceCharacteristicMap.remove(device.address)
+            writeDataPayload[device.address]?.let {
+                try {
+                    Utils.broadcastStreetPassReceived(context, BlueTraceV2().peripheral.processWriteRequestDataReceived(it, device.address))
+                } catch (e: Throwable) {
+                    CentralLog.e(TAG, "Failed to process write payload - ${e.message}")
                 }
+
+                Utils.broadcastDeviceProcessed(context, device.address)
+                writeDataPayload.remove(device.address)
+                readPayloadMap.remove(device.address)
             }
         }
     }
