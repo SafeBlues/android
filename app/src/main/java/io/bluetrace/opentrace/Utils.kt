@@ -219,7 +219,7 @@ object Utils {
     ) {
         val intent = Intent(ACTION_DEVICE_SCANNED)
         intent.putExtra(BluetoothDevice.EXTRA_DEVICE, device)
-        intent.putExtra(CONNECTION_DATA, connectableBleDevice)
+        intent.putExtra(CONNECTION_DATA, connectableBleDevice.toByteArray())
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 
@@ -232,7 +232,7 @@ object Utils {
 
     fun broadcastStreetPassReceived(context: Context, streetpass: SafeBluesProtos.ConnRec) {
         val intent = Intent(ACTION_RECEIVED_STREETPASS)
-        intent.putExtra(STREET_PASS, streetpass)
+        intent.putExtra(STREET_PASS, streetpass.toByteArray())
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 
