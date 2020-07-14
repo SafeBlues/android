@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4746140d56d2a7ea49bfd3068988fee1",
+    "identityHash": "c6f2a6045924d364cb9d0ab36b0a285d",
     "entities": [
       {
         "tableName": "record_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER NOT NULL, `shareList` BLOB NOT NULL, `firstSeen` INTEGER NOT NULL, `lastSeen` INTEGER NOT NULL, `modelP` TEXT NOT NULL, `modelC` TEXT NOT NULL, `rssi` INTEGER NOT NULL, `txPower` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER NOT NULL, `shareList` BLOB NOT NULL, `address` TEXT NOT NULL, `modelP` TEXT NOT NULL, `modelC` TEXT NOT NULL, `rssi` INTEGER NOT NULL, `txPower` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -27,15 +27,9 @@
             "notNull": true
           },
           {
-            "fieldPath": "firstSeen",
-            "columnName": "firstSeen",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lastSeen",
-            "columnName": "lastSeen",
-            "affinity": "INTEGER",
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -108,7 +102,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4746140d56d2a7ea49bfd3068988fee1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c6f2a6045924d364cb9d0ab36b0a285d')"
     ]
   }
 }

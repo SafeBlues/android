@@ -22,14 +22,14 @@ class TracerApp : Application() {
         fun getPeripheral(): SafeBluesProtos.Device {
             return SafeBluesProtos.Device.newBuilder().apply {
                 this.model = Build.MODEL
-                this.address = "SELF_ADDR_P"
+                this.address = "SELF"
             }.build()
         }
 
         fun getCentral(): SafeBluesProtos.Device {
             return SafeBluesProtos.Device.newBuilder().apply {
                 this.model = Build.MODEL
-                this.address = "SELF_ADDR_C"
+                this.address = "SELF"
             }.build()
         }
     }

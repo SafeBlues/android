@@ -4,8 +4,7 @@ import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecord
 
 class StreetPassRecordViewModel(record: StreetPassRecord, val number: Int = 1) {
     val shareList = record.shareList
-    val firstSeen = record.firstSeen
-    val lastSeen = record.lastSeen
+    val address = record.address
     val modelC = record.modelC
     val modelP = record.modelP
     val timeStamp = record.timestamp

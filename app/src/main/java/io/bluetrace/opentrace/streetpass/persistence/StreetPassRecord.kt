@@ -9,11 +9,8 @@ class StreetPassRecord constructor(
     @ColumnInfo(name = "shareList")
     val shareList: ByteArray,
 
-    @ColumnInfo(name = "firstSeen")
-    val firstSeen: Long,
-
-    @ColumnInfo(name = "lastSeen")
-    val lastSeen: Long,
+    @ColumnInfo(name = "address")
+    val address: String,
 
     @ColumnInfo(name = "modelP")
     val modelP: String,

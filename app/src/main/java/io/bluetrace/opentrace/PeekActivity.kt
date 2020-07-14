@@ -106,10 +106,9 @@ class PeekActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val uid = FirebaseAuth.getInstance().currentUser!!.uid
         val serviceUUID = BuildConfig.BLE_SSID
         info.text =
-            "UID: ${uid.substring(uid.length - 4)}   SSID: ${serviceUUID.substring(serviceUUID.length - 4)}"
+            "SSID: ${serviceUUID.substring(serviceUUID.length - 4)}"
 
         if (!BuildConfig.DEBUG) {
             start.visibility = View.GONE

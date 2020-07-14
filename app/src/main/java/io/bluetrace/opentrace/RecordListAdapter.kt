@@ -51,8 +51,8 @@ class RecordListAdapter internal constructor(context: Context) :
         holder.findsView.text = "Detections: ${current.number}"
         val readableDate = Utils.getDate(current.timeStamp)
         holder.timestampView.text = readableDate
-        holder.version.text = "firstSeen: ${current.firstSeen}"
-        holder.org.text = "lastSeen: ${current.lastSeen}"
+        holder.version.text = ""
+        holder.org.text = ""
 
         holder.filterModelP.tag = current
         holder.filterModelC.tag = current

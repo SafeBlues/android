@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import pub.devrel.easypermissions.EasyPermissions
 import io.bluetrace.opentrace.BuildConfig
 import io.bluetrace.opentrace.Preference
+import io.bluetrace.opentrace.TracerApp
 import io.bluetrace.opentrace.Utils
 import io.bluetrace.opentrace.bluetooth.BLEAdvertiser
 import io.bluetrace.opentrace.bluetooth.gatt.ACTION_RECEIVED_STATUS
@@ -583,8 +584,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
 
                 val record = StreetPassRecord(
                     shareList = connRecord.shareList.toByteArray(),
-                    firstSeen = 0,
-                    lastSeen = System.currentTimeMillis(),
+                    address = if (connRecord.peripheral.address == "SELF") connRecord.central.address else connRecord.peripheral.address,
                     modelP = connRecord.peripheral.model,
                     modelC = connRecord.central.model,
                     rssi = connRecord.rssi,
