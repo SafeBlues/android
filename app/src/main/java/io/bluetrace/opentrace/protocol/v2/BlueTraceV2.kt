@@ -34,7 +34,10 @@ class V2Peripheral : PeripheralInterface {
         val data = SafeBluesProtos.WriteReq.parseFrom(dataReceived)
         return SafeBluesProtos.ConnRec.newBuilder().apply {
             this.shareList = data.shareList
-            this.central = data.central
+            this.central = SafeBluesProtos.Device.newBuilder().apply {
+                address = centralAddress
+                model = data.central.model
+            }.build()
             this.peripheral = TracerApp.getPeripheral()
             this.rssi = data.rssi
             //this.txPower = null
@@ -67,7 +70,10 @@ class V2Central : CentralInterface {
         return SafeBluesProtos.ConnRec.newBuilder().apply {
             this.shareList = data.shareList
             this.central = TracerApp.getCentral()
-            this.peripheral = data.peripheral
+            this.peripheral = SafeBluesProtos.Device.newBuilder().apply {
+                address = peripheralAddress
+                model = data.peripheral.model
+            }.build()
             this.rssi = rssi
             this.txPower = txPower ?: 0
         }.build()
