@@ -51,7 +51,7 @@ class RecordListAdapter internal constructor(context: Context) :
         holder.findsView.text = "Detections: ${current.number}"
         val readableDate = Utils.getDate(current.timeStamp)
         holder.timestampView.text = readableDate
-        holder.version.text = "Address: ${current.address}"
+        holder.version.text = "TempID: ${current.tempId}, (Address: ${current.address})"
         holder.org.text = "Strands: " + SafeBluesProtos.ShareList.parseFrom(current.shareList).strandsList.joinToString()
 
         holder.filterModelP.tag = current

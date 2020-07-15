@@ -55,6 +55,9 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val db = StreetPassRecordDatabase.getDatabase(view.context)
 
+        git_hash.visibility = View.VISIBLE
+        git_hash.text = BuildConfig.GITHASH
+
         lastKnownScanningStarted = db.statusDao().getMostRecentRecord("Scanning Started")
         lastKnownScanningStarted.observe(viewLifecycleOwner,
             Observer { record ->
@@ -84,12 +87,12 @@ class HomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        //sync_strands_button.setOnClickListener {
-        //    syncStrands()
-        //}
-
         sync_strands_button.setOnClickListener {
             syncStrands(it)
+        }
+
+        set_temp_id.setOnClickListener {
+            API.setTempID(temp_id.text.toString())
         }
 
         share_card_view.setOnClickListener { shareThisApp() }

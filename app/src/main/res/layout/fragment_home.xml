@@ -61,6 +61,19 @@
                         tools:layout_editor_absoluteX="0dp"
                         tools:layout_editor_absoluteY="272dp" />
 
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/git_hash"
+                        android:layout_width="67dp"
+                        android:layout_height="wrap_content"
+                        android:text="XXXXXXX"
+                        android:textColor="@color/blue_update"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:visibility="invisible"
+                        app:layout_constraintStart_toStartOf="@+id/animation_view"
+                        card_view:layout_constraintBottom_toBottomOf="parent"
+                        card_view:layout_constraintRight_toRightOf="parent" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -74,6 +87,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/help_action" />
+
+                <EditText
+                    android:id="@+id/temp_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="TempID" />
+
+                <Button
+                    android:id="@+id/set_temp_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Set TempID" />
 
                 <Button
                     android:id="@+id/sync_strands_button"

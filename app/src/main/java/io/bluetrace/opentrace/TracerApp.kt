@@ -3,6 +3,7 @@ package io.bluetrace.opentrace
 import android.app.Application
 import android.content.Context
 import android.os.Build
+import org.safeblues.android.API
 import org.safeblues.api.SafeBluesProtos
 
 class TracerApp : Application() {
@@ -23,6 +24,7 @@ class TracerApp : Application() {
             return SafeBluesProtos.Device.newBuilder().apply {
                 this.model = Build.MODEL
                 this.address = "SELF"
+                this.tempId = API.getCurrentTempID()
             }.build()
         }
 
@@ -30,6 +32,7 @@ class TracerApp : Application() {
             return SafeBluesProtos.Device.newBuilder().apply {
                 this.model = Build.MODEL
                 this.address = "SELF"
+                this.tempId = API.getCurrentTempID()
             }.build()
         }
     }

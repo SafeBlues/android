@@ -12,6 +12,9 @@ class StreetPassRecord constructor(
     @ColumnInfo(name = "address")
     val address: String,
 
+    @ColumnInfo(name = "tempId")
+    val tempId: String,
+
     @ColumnInfo(name = "modelP")
     val modelP: String,
 

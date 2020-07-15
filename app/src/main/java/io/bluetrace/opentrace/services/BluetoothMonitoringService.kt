@@ -585,6 +585,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                 val record = StreetPassRecord(
                     shareList = connRecord.shareList.toByteArray(),
                     address = if (connRecord.peripheral.address == "SELF") connRecord.central.address else connRecord.peripheral.address,
+                    tempId = if (connRecord.peripheral.address == "SELF") connRecord.central.tempId else connRecord.peripheral.tempId,
                     modelP = connRecord.peripheral.model,
                     modelC = connRecord.central.model,
                     rssi = connRecord.rssi,

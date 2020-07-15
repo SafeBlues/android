@@ -678,7 +678,6 @@ class StreetPassWorker(val context: Context) {
         private val TAG = "ScannedDeviceReceiver"
 
         override fun onReceive(context: Context?, intent: Intent?) {
-
             intent?.let {
                 if (ACTION_DEVICE_SCANNED == intent.action) {
                     //get data from extras

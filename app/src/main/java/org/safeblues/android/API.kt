@@ -25,6 +25,8 @@ object API {
     private val channel = ManagedChannelBuilder.forAddress("api.safeblues.org", 8443).useTransportSecurity().build()
     private val stub = SafeBluesGrpcKt.SafeBluesCoroutineStub(channel)
 
+    private var tempID = "TEMP_ID_NOT_INIT"
+
     suspend fun syncStrandsWithServer(context: Context) {
         val res = stub.pull(SafeBluesProtos.Empty.getDefaultInstance())
         Log.i(TAG, "Got strands from server: " + res.toString())
@@ -58,6 +60,14 @@ object API {
 
         ret.addStrands(930)
         return ret.build()
+    }
+
+    fun getCurrentTempID(): String {
+        return tempID
+    }
+
+    fun setTempID(tempID_: String) {
+        tempID = tempID_
     }
 
     suspend fun ping() {

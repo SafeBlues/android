@@ -60,6 +60,7 @@ message ConnectableDevice {
 message Device {
     string model = 1;
     string address = 2;
+    string temp_id = 3;
 }
 
 message ReadReq {

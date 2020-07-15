@@ -39,6 +39,7 @@ class V2Peripheral : PeripheralInterface {
             this.central = SafeBluesProtos.Device.newBuilder().apply {
                 address = centralAddress
                 model = data.central.model
+                tempId = data.central.tempId
             }.build()
             this.peripheral = TracerApp.getPeripheral()
             this.rssi = data.rssi
@@ -74,6 +75,7 @@ class V2Central : CentralInterface {
             this.peripheral = SafeBluesProtos.Device.newBuilder().apply {
                 address = peripheralAddress
                 model = data.peripheral.model
+                tempId = data.peripheral.tempId
             }.build()
             this.rssi = rssi
             this.txPower = txPower ?: 0
