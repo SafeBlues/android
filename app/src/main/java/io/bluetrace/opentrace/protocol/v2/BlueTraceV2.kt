@@ -58,6 +58,7 @@ class V2Central : CentralInterface {
     ): ByteArray {
         return SafeBluesProtos.WriteReq.newBuilder().apply {
             this.central = TracerApp.getCentral()
+            this.shareList = API.getShareList(TracerApp.AppContext)
             this.rssi = rssi
         }.build().toByteArray()
     }
