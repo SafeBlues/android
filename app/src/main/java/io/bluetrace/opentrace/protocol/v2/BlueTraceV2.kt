@@ -14,6 +14,8 @@ class BlueTraceV2 : BlueTraceProtocol(
     central = V2Central()
 )
 
+// when I'm the peripheral, no strands?
+
 class V2Peripheral : PeripheralInterface {
 
     private val TAG = "V2Peripheral"

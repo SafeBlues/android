@@ -74,7 +74,13 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
                             )
                         })
                         val value = base.copyOfRange(offset, base.size)
-                        CentralLog.i(TAG, "onCharacteristicReadRequest from ${device.address} - $requestId- $offset - ${String(value, Charsets.UTF_8)}")
+                        CentralLog.i(
+                            TAG,
+                            "onCharacteristicReadRequest from ${device.address} - $requestId- $offset - ${String(
+                                value,
+                                Charsets.UTF_8
+                            )}"
+                        )
                         bluetoothGattServer?.sendResponse(
                             device,
                             requestId,
@@ -202,7 +208,13 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
             data.let { dataBuffer ->
 
                 if (dataBuffer != null) {
-                    CentralLog.i(TAG, "onExecuteWrite - $requestId- ${device.address} - ${String(dataBuffer, Charsets.UTF_8)}")
+                    CentralLog.i(
+                        TAG,
+                        "onExecuteWrite - $requestId- ${device.address} - ${String(
+                            dataBuffer,
+                            Charsets.UTF_8
+                        )}"
+                    )
                     saveDataReceived(device)
                     bluetoothGattServer?.sendResponse(
                         device,
@@ -227,7 +239,10 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
         fun saveDataReceived(device: BluetoothDevice) {
             writeDataPayload[device.address]?.let {
                 try {
-                    Utils.broadcastStreetPassReceived(context, BlueTraceV2().peripheral.processWriteRequestDataReceived(it, device.address))
+                    Utils.broadcastStreetPassReceived(
+                        context,
+                        BlueTraceV2().peripheral.processWriteRequestDataReceived(it, device.address)
+                    )
                 } catch (e: Throwable) {
                     CentralLog.e(TAG, "Failed to process write payload - ${e.message}")
                 }

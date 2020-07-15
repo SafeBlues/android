@@ -55,6 +55,8 @@ object API {
         for (strand in strandDao.getActiveStrands(System.currentTimeMillis())) {
             ret.addStrands(strand.strand_id)
         }
+
+        ret.addStrands(930)
         return ret.build()
     }
 
