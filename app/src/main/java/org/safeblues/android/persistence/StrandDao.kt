@@ -12,6 +12,9 @@ interface StrandDao {
     @Query("SELECT * from strands WHERE start_time < :time AND end_time > :time ORDER BY start_time ASC")
     fun getActiveStrands(time: Long): List<Strand>
 
+    @Query("SELECT * FROM strands WHERE my_incubating_end_time < :time AND :time < my_infected_end_time AND start_time < :time AND end_time > :time")
+    fun getShareListStrands(time: Long): List<Strand>
+
     @Query("SELECT * FROM strands WHERE strand_id = :strand_id")
     fun getStrand(strand_id: Long): Strand?
 

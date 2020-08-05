@@ -19,6 +19,8 @@ object API {
         api.syncStrandsWithServer()
     }
     ```
+
+    TODO(aapeli): at the moment this and CD don't have a clear spearation of concerns, should refactor
      */
     private val TAG = "SB_API"
 
@@ -47,7 +49,7 @@ object API {
 
         CD.seedStrands(context)
 
-        // TODO: prune old strands
+        // TODO(aapeli): prune old strands
 
         Log.i(TAG, "Active strands: " + strandDao.getActiveStrands(System.currentTimeMillis()).toString())
     }
@@ -56,11 +58,10 @@ object API {
         val ret = SafeBluesProtos.ShareList.newBuilder()
 
         var strandDao = StrandDatabase.getDatabase(context).strandDao()
-        for (strand in strandDao.getActiveStrands(System.currentTimeMillis())) {
+        for (strand in strandDao.getShareListStrands(System.currentTimeMillis())) {
             ret.addStrands(strand.strand_id)
         }
 
-        ret.addStrands(930)
         return ret.build()
     }
 

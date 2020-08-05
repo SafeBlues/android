@@ -96,6 +96,7 @@ object CD {
                 Log.i(TAG, "Processing tempId: " + record.tempId)
 
                 // TODO(aapeli): walk through all records from that tempID and compute time + median distance/etc
+                // TODO(aapeli): run a check first to see if there's any strands that need an update
                 val time = 20*1000 // ms
                 val median_distance = 2 // TODO(aapeli): units???
 
