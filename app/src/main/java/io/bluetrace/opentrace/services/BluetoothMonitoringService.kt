@@ -42,6 +42,7 @@ import io.bluetrace.opentrace.streetpass.StreetPassWorker
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecord
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordStorage
 import org.safeblues.android.CD
+import org.safeblues.android.CDWorker
 import org.safeblues.api.SafeBluesProtos
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
@@ -595,7 +596,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                     streetPassRecordStorage.saveRecord(record)
                     CentralLog.i("QUESTION", "Am I not here?")
                     CentralLog.i("QUESTION", "I'm here: " + (Looper.myLooper() == Looper.getMainLooper()).toString())
-                    CD.update(context)
+                    CDWorker.enqueueUpdate(context)
                 }
             }
         }

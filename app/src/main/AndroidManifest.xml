@@ -79,6 +79,10 @@
             </intent-filter>
         </service>
 
+        <service android:name="org.safeblues.android.CDWorker"
+            android:permission="android.permission.BIND_JOB_SERVICE" >
+        </service>
+
         <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
      See README(https://goo.gl/l4GJaQ) for more. -->
         <meta-data
