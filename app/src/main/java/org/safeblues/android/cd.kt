@@ -110,6 +110,8 @@ object CD {
                         Log.w(TAG, record.tempId + " advertised inactive strand, id: " + strand_id)
                     } else if (!strand.seeding_simulated) {
                         Log.w(TAG, record.tempId + " advertised strand we haven't initialised yet, id: " + strand_id)
+                    } else if (strand.been_infected) {
+                        Log.i(TAG, record.tempId + " advertised strand we are already infected with: " + strand_id)
                     } else {
                         Log.i(TAG, "Got strand: " + strand_id)
                         // TODO(aapeli): use time/distance
