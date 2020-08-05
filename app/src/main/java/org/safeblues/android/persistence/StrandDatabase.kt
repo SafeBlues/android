@@ -28,8 +28,7 @@ abstract class StrandDatabase : RoomDatabase() {
                     context,
                     StrandDatabase::class.java,
                     "strand_database"
-                )
-                    .build()
+                ).build()
                 INSTANCE = instance
                 return instance
             }

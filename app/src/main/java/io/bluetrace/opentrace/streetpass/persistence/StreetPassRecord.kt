@@ -36,4 +36,6 @@ class StreetPassRecord constructor(
     @ColumnInfo(name = "timestamp")
     var timestamp: Long = System.currentTimeMillis()
 
+    @ColumnInfo(name = "processed")
+    var processed: Boolean = false
 }

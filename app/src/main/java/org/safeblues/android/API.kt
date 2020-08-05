@@ -45,6 +45,8 @@ object API {
             ))
         }
 
+        CD.seedStrands(context)
+
         // TODO: prune old strands
 
         Log.i(TAG, "Active strands: " + strandDao.getActiveStrands(System.currentTimeMillis()).toString())

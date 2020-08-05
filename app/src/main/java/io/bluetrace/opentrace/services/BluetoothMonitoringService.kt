@@ -10,10 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
-import android.os.Bundle
-import android.os.IBinder
-import android.os.PowerManager
+import android.os.*
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
@@ -44,6 +41,7 @@ import io.bluetrace.opentrace.streetpass.StreetPassServer
 import io.bluetrace.opentrace.streetpass.StreetPassWorker
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecord
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordStorage
+import org.safeblues.android.CD
 import org.safeblues.api.SafeBluesProtos
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
@@ -595,6 +593,9 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                 launch {
                     CentralLog.d(TAG, "Coroutine - Saving StreetPassRecord: ${Utils.getDate(record.timestamp)}")
                     streetPassRecordStorage.saveRecord(record)
+                    CentralLog.i("QUESTION", "Am I not here?")
+                    CentralLog.i("QUESTION", "I'm here: " + (Looper.myLooper() == Looper.getMainLooper()).toString())
+                    CD.update(context)
                 }
             }
         }
