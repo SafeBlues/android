@@ -31,8 +31,8 @@ interface StreetPassRecordDao {
     @Query("UPDATE record_table SET processed = 1 WHERE id = (SELECT max(id) FROM record_table WHERE tempId = :tempId)")
     suspend fun markTempIdProcessed(tempId: String)
 
-    //@Query("DELETE FROM record_table WHERE timestamp < NOW() - '2 days'")
-    //suspend fun deleteOldRecords()
+    @Query("SELECT * FROM record_table WHERE tempId = :tempId")
+    suspend fun getAllRecordsForTempId(tempId: String): List<StreetPassRecord>
 
     @RawQuery
     fun getRecordsViaQuery(query: SupportSQLiteQuery): List<StreetPassRecord>

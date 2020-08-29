@@ -100,6 +100,36 @@ object CD {
                 val time = 20*1000 // ms
                 val median_distance = 2 // TODO(aapeli): units???
 
+                var first_seen = Long.MAX_VALUE
+                var last_seen = Long.MIN_VALUE
+
+                val all_records = db.getAllRecordsForTempId(record.tempId)
+
+                assert(all_records.size > 0)
+
+                val RSSIs: MutableList<Int> = mutableListOf()
+                val txPowers: MutableList<Int> = mutableListOf()
+
+                for (r in all_records) {
+                    if (r.timestamp < first_seen) {
+                        first_seen = r.timestamp
+                    }
+                    if (r.timestamp > last_seen) {
+                        last_seen  = r.timestamp
+                    }
+                    RSSIs.add(r.rssi)
+                    if (r.txPower != null) {
+                        txPowers.add(r.txPower)
+                    }
+                }
+
+                if (txPowers.size == 0) {
+                    Log.e(TAG, "txPowers empty")
+                    // TODO(aapeli): what if there's no txPowers??
+                }
+
+                // TODO(aapeli): QQQQ, start here!
+
                 val strand_ids = SafeBluesProtos.ShareList.parseFrom(record.shareList).strandsList
                 Log.i(TAG, "Strands: " + strand_ids.toString())
 
