@@ -73,8 +73,9 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
                             val base = readPayloadMap.getOrPut(device.address, {
                                 bt.peripheral.prepareReadRequestData(
                                     bt.versionInt
+                                )
                             })
-                            )
+                            val value = base.copyOfRange(offset, base.size)
                             bluetoothGattServer?.sendResponse(
                                 device,
                                 requestId,

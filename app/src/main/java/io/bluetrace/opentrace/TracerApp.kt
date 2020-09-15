@@ -8,8 +8,6 @@ import org.safeblues.api.SafeBluesProtos
 import io.bluetrace.opentrace.idmanager.TempIDManager
 import io.bluetrace.opentrace.logging.CentralLog
 import io.bluetrace.opentrace.services.BluetoothMonitoringService
-import io.bluetrace.opentrace.streetpass.CentralDevice
-import io.bluetrace.opentrace.streetpass.PeripheralDevice
 
 class TracerApp : Application() {
 
