@@ -103,6 +103,34 @@ object Utils {
         )
     }
 
+    fun scheduleBMUpdateCheck(context: Context, bmCheckInterval: Long) {
+
+        cancelBMUpdateCheck(context)
+
+        val intent = Intent(context, BluetoothMonitoringService::class.java)
+        intent.putExtra(
+            BluetoothMonitoringService.COMMAND_KEY,
+            BluetoothMonitoringService.Command.ACTION_UPDATE_BM.index
+        )
+
+        Scheduler.scheduleServiceIntent(
+            PENDING_BM_UPDATE,
+            context,
+            intent,
+            bmCheckInterval
+        )
+    }
+
+    fun cancelBMUpdateCheck(context: Context) {
+        val intent = Intent(context, BluetoothMonitoringService::class.java)
+        intent.putExtra(
+            BluetoothMonitoringService.COMMAND_KEY,
+            BluetoothMonitoringService.Command.ACTION_UPDATE_BM.index
+        )
+
+        Scheduler.cancelServiceIntent(PENDING_BM_UPDATE, context, intent)
+    }
+
     fun stopBluetoothMonitoringService(context: Context) {
         val intent = Intent(context, BluetoothMonitoringService::class.java)
         intent.putExtra(

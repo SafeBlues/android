@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGatt.GATT_SUCCESS
 import android.content.Context
 import io.bluetrace.opentrace.BuildConfig
 import io.bluetrace.opentrace.Utils
+import io.bluetrace.opentrace.idmanager.TempIDManager
 import io.bluetrace.opentrace.logging.CentralLog
 import io.bluetrace.opentrace.protocol.v2.BlueTraceV2
 import java.util.*
@@ -68,26 +69,32 @@ class GattServer constructor(val context: Context, serviceUUIDString: String) {
 
                     characteristic?.uuid?.let { charUUID ->
                         val bt = BlueTraceV2()
-                        val base = readPayloadMap.getOrPut(device.address, {
-                            bt.peripheral.prepareReadRequestData(
-                                bt.versionInt
+                        if (TempIDManager.bmValid(context)) {
+                            val base = readPayloadMap.getOrPut(device.address, {
+                                bt.peripheral.prepareReadRequestData(
+                                    bt.versionInt
+                            })
                             )
-                        })
-                        val value = base.copyOfRange(offset, base.size)
-                        CentralLog.i(
-                            TAG,
-                            "onCharacteristicReadRequest from ${device.address} - $requestId- $offset - ${String(
-                                value,
-                                Charsets.UTF_8
-                            )}"
-                        )
-                        bluetoothGattServer?.sendResponse(
-                            device,
-                            requestId,
-                            GATT_SUCCESS,
-                            0,
-                            value
-                        )
+                            bluetoothGattServer?.sendResponse(
+                                device,
+                                requestId,
+                                GATT_SUCCESS,
+                                0,
+                                value
+                            )
+                        } else {
+                            CentralLog.i(
+                                TAG,
+                                "onCharacteristicReadRequest from ${device.address} - $requestId- $offset - BM Expired"
+                            )
+                            bluetoothGattServer?.sendResponse(
+                                device,
+                                requestId,
+                                GATT_FAILURE,
+                                0,
+                                ByteArray(0)
+                            )
+                        }
                     }
 
                 } else {

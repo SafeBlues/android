@@ -30,6 +30,7 @@ import io.bluetrace.opentrace.BuildConfig
 import io.bluetrace.opentrace.Preference
 import io.bluetrace.opentrace.R
 import io.bluetrace.opentrace.Utils
+import io.bluetrace.opentrace.idmanager.TempIDManager
 import io.bluetrace.opentrace.logging.CentralLog
 import io.bluetrace.opentrace.services.BluetoothMonitoringService
 import java.util.concurrent.TimeUnit

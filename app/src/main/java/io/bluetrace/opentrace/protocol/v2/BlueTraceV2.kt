@@ -25,6 +25,7 @@ class V2Peripheral : PeripheralInterface {
         return SafeBluesProtos.ReadReq.newBuilder().apply {
             this.peripheral = TracerApp.getPeripheral()
             this.shareList = API.getShareList(TracerApp.AppContext)
+            //id = TracerApp.thisDeviceMsg(),
         }.build().toByteArray()
     }
 
@@ -60,6 +61,7 @@ class V2Central : CentralInterface {
             this.central = TracerApp.getCentral()
             this.shareList = API.getShareList(TracerApp.AppContext)
             this.rssi = rssi
+            //id = TracerApp.thisDeviceMsg(),
         }.build().toByteArray()
     }
 
