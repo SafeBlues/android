@@ -27,7 +27,7 @@ abstract class TempIDDatabase : RoomDatabase() {
                     context,
                     TempIDDatabase::class.java,
                     "temp_ids_database"
-                ).build()
+                ).allowMainThreadQueries().build()
                 INSTANCE = instance
                 return instance
             }

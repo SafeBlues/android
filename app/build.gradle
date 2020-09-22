@@ -41,7 +41,7 @@ android {
     defaultConfig {
         applicationId "org.safeblues.android"
         resValue "string", "build_config_package", "org.safeblues.android"
-        minSdkVersion 22
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 41
         versionName "1.0.41"

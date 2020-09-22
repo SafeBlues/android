@@ -97,8 +97,6 @@ object CD {
 
                 // TODO(aapeli): walk through all records from that tempID and compute time + median distance/etc
                 // TODO(aapeli): run a check first to see if there's any strands that need an update
-                val time = 20*1000 // ms
-                val median_distance = 2 // TODO(aapeli): units???
 
                 var first_seen = Long.MAX_VALUE
                 var last_seen = Long.MIN_VALUE
@@ -117,16 +115,27 @@ object CD {
                     if (r.timestamp > last_seen) {
                         last_seen  = r.timestamp
                     }
-                    RSSIs.add(r.rssi)
-                    if (r.txPower != null) {
+                    if (r.txPower != null && r.rssi != null) {
+                        RSSIs.add(r.rssi)
                         txPowers.add(r.txPower)
                     }
                 }
 
-                if (txPowers.size == 0) {
-                    Log.e(TAG, "txPowers empty")
-                    // TODO(aapeli): what if there's no txPowers??
+                if (txPowers.size == 0 || RSSIs.size == 0) {
+                    Log.e(TAG, "txPowers/RSSIs empty")
+                    return
                 }
+
+                txPowers.sort()
+                RSSIs.sort()
+
+                val medianTxPower = txPowers[txPowers.size / 2]
+                val medianRSSI = RSSIs[RSSIs.size / 2]
+
+
+
+                val time = last_seen - first_seen // ms
+                val median_distance = 2 // TODO(aapeli): units???
 
                 // TODO(aapeli): QQQQ, start here!
 

@@ -3,15 +3,18 @@ package org.safeblues.android
 import android.content.Context
 import android.util.Base64
 import android.util.Log
+import android.widget.Toast
 import io.grpc.ManagedChannelBuilder
 import org.safeblues.android.persistence.Strand
 import org.safeblues.android.persistence.StrandDatabase
 import org.safeblues.api.SafeBluesGrpcKt
 import org.safeblues.api.SafeBluesProtos
 import com.google.protobuf.util.Timestamps.toMillis
+import io.grpc.Grpc
 import kotlinx.coroutines.runBlocking
 import org.safeblues.android.persistence.TempID
 import org.safeblues.android.persistence.TempIDDatabase
+import java.lang.Exception
 import kotlin.random.Random
 
 object API {
@@ -34,28 +37,37 @@ object API {
 
 
     suspend fun syncStrandsWithServer(context: Context) {
-        val res = stub.pull(SafeBluesProtos.Empty.getDefaultInstance())
-        Log.i(TAG, "Got strands from server: " + res.toString())
+        try {
+            val res = stub.pull(SafeBluesProtos.Empty.getDefaultInstance())
+            Log.i(TAG, "Got strands from server: " + res.toString())
 
-        val strandDao = StrandDatabase.getDatabase(context).strandDao()
-        for (strand in res.strandsList) {
-            Log.i(TAG, "Strand: " + strand.toString())
-            strandDao.insert(Strand(
-                strand_id=strand.strandId,
-                start_time= toMillis(strand.startTime),
-                end_time=toMillis(strand.endTime),
-                seeding_probability=strand.seedingProbability,
-                infection_probability=strand.infectionProbability,
-                incubation_period_days=strand.incubationPeriodDays,
-                infectious_period_days=strand.infectiousPeriodDays
-            ))
+            val strandDao = StrandDatabase.getDatabase(context).strandDao()
+            for (strand in res.strandsList) {
+                Log.i(TAG, "Strand: " + strand.toString())
+                strandDao.insert(
+                    Strand(
+                        strand_id = strand.strandId,
+                        start_time = toMillis(strand.startTime),
+                        end_time = toMillis(strand.endTime),
+                        seeding_probability = strand.seedingProbability,
+                        infection_probability = strand.infectionProbability,
+                        incubation_period_days = strand.incubationPeriodDays,
+                        infectious_period_days = strand.infectiousPeriodDays
+                    )
+                )
+            }
+
+            CD.seedStrands(context)
+
+            // TODO(aapeli): prune old strands
+
+            Log.i(TAG,
+                "Active strands: " + strandDao.getActiveStrands(System.currentTimeMillis())
+                    .toString()
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to sync: " + e.toString())
         }
-
-        CD.seedStrands(context)
-
-        // TODO(aapeli): prune old strands
-
-        Log.i(TAG, "Active strands: " + strandDao.getActiveStrands(System.currentTimeMillis()).toString())
     }
 
     fun getShareList(context: Context): SafeBluesProtos.ShareList {

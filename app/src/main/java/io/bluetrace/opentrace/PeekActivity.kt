@@ -17,6 +17,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.database_peek.*
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordStorage
 import io.bluetrace.opentrace.streetpass.view.RecordViewModel
+import org.safeblues.android.API
 
 
 class PeekActivity : AppCompatActivity() {
@@ -108,7 +109,7 @@ class PeekActivity : AppCompatActivity() {
 
         val serviceUUID = BuildConfig.BLE_SSID
         info.text =
-            "SSID: ${serviceUUID.substring(serviceUUID.length - 4)}"
+            "SSID: ${serviceUUID.substring(serviceUUID.length - 4)}. TempID: ${API.getCurrentTempID(applicationContext)}"
 
         if (!BuildConfig.DEBUG) {
             start.visibility = View.GONE
