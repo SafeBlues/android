@@ -91,10 +91,6 @@ class HomeFragment : Fragment() {
             syncStrands(it)
         }
 
-        set_temp_id.setOnClickListener {
-            API.setTempID(temp_id.text.toString())
-        }
-
         share_card_view.setOnClickListener { shareThisApp() }
         animation_view.setOnClickListener {
             if (BuildConfig.DEBUG && ++counter == 2) {

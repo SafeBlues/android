@@ -88,20 +88,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/help_action" />
 
-                <EditText
-                    android:id="@+id/temp_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    android:text="TempID" />
-
-                <Button
-                    android:id="@+id/set_temp_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Set TempID" />
-
                 <Button
                     android:id="@+id/sync_strands_button"
                     android:layout_width="match_parent"

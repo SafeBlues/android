@@ -1,6 +1,7 @@
 package org.safeblues.android
 
 import android.content.Context
+import android.util.Base64
 import android.util.Log
 import io.grpc.ManagedChannelBuilder
 import org.safeblues.android.persistence.Strand
@@ -8,6 +9,10 @@ import org.safeblues.android.persistence.StrandDatabase
 import org.safeblues.api.SafeBluesGrpcKt
 import org.safeblues.api.SafeBluesProtos
 import com.google.protobuf.util.Timestamps.toMillis
+import kotlinx.coroutines.runBlocking
+import org.safeblues.android.persistence.TempID
+import org.safeblues.android.persistence.TempIDDatabase
+import kotlin.random.Random
 
 object API {
     /*
@@ -27,13 +32,12 @@ object API {
     private val channel = ManagedChannelBuilder.forAddress("api.safeblues.org", 8443).useTransportSecurity().build()
     private val stub = SafeBluesGrpcKt.SafeBluesCoroutineStub(channel)
 
-    private var tempID = "TEMP_ID_NOT_INIT"
 
     suspend fun syncStrandsWithServer(context: Context) {
         val res = stub.pull(SafeBluesProtos.Empty.getDefaultInstance())
         Log.i(TAG, "Got strands from server: " + res.toString())
 
-        var strandDao = StrandDatabase.getDatabase(context).strandDao()
+        val strandDao = StrandDatabase.getDatabase(context).strandDao()
         for (strand in res.strandsList) {
             Log.i(TAG, "Strand: " + strand.toString())
             strandDao.insert(Strand(
@@ -57,7 +61,7 @@ object API {
     fun getShareList(context: Context): SafeBluesProtos.ShareList {
         val ret = SafeBluesProtos.ShareList.newBuilder()
 
-        var strandDao = StrandDatabase.getDatabase(context).strandDao()
+        val strandDao = StrandDatabase.getDatabase(context).strandDao()
         for (strand in strandDao.getShareListStrands(System.currentTimeMillis())) {
             ret.addStrands(strand.strand_id)
         }
@@ -65,12 +69,24 @@ object API {
         return ret.build()
     }
 
-    fun getCurrentTempID(): String {
-        return tempID
-    }
+    fun getCurrentTempID(context: Context): String {
+        val tempIDDao = TempIDDatabase.getDatabase(context).tempIDDao()
 
-    fun setTempID(tempID_: String) {
-        tempID = tempID_
+        val currentTempId = tempIDDao.getTempID(System.currentTimeMillis())
+
+        if (currentTempId == null) {
+            val tempId = Base64.encodeToString(Random.nextBytes(16), Base64.DEFAULT)
+            val now = System.currentTimeMillis()
+            val record = TempID(tempId, now, now + 10 * 60 * 1000)
+
+            runBlocking {
+                tempIDDao.insert(record)
+            }
+
+            return tempId
+        } else {
+            return currentTempId.temp_id
+        }
     }
 
     suspend fun ping() {

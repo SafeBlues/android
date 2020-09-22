@@ -24,7 +24,7 @@ class TracerApp : Application() {
             return SafeBluesProtos.Device.newBuilder().apply {
                 this.model = Build.MODEL
                 this.address = "SELF"
-                this.tempId = API.getCurrentTempID()
+                this.tempId = API.getCurrentTempID(AppContext)
             }.build()
         }
 
@@ -32,7 +32,7 @@ class TracerApp : Application() {
             return SafeBluesProtos.Device.newBuilder().apply {
                 this.model = Build.MODEL
                 this.address = "SELF"
-                this.tempId = API.getCurrentTempID()
+                this.tempId = API.getCurrentTempID(AppContext)
             }.build()
         }
     }
