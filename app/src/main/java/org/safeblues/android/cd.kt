@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.Log
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecord
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordDatabase
+import org.safeblues.android.persistence.Strand
 import org.safeblues.android.persistence.StrandDatabase
 import org.safeblues.api.SafeBluesProtos
 import java.security.SecureRandom
+import kotlin.math.exp
 
 /*
 # Course of disease logic
@@ -53,8 +55,8 @@ object CD {
         } else {
             // TODO(aapeli): compute random variates
             Log.w(TAG, "Seeding without seeding! TODO")
-            val incubation_end = now + Math.round(strand.incubation_period_days * 24 * 60 * 60 * 1000)
-            val infection_end = incubation_end + Math.round(strand.infectious_period_days * 24 * 60 * 60 * 1000)
+            val incubation_end = now + Math.round(simulateIncubationPeriod(strand) * 1000)
+            val infection_end = incubation_end + Math.round(simulateInfectiousPeriod(strand) * 1000)
             strandDb.infectStrand(strand_id, incubation_end, infection_end)
         }
     }
@@ -73,6 +75,21 @@ object CD {
             infectWithProb(context, strand.strand_id, strand.seeding_probability)
             strandDb.markStrandInitialised(strand.strand_id)
         }
+    }
+
+    private fun simulateIncubationPeriod(strand: Strand): Double /* s */ {
+        // TODO(aapeli): gamma dist
+        return strand.incubation_period_days * 24 * 60 * 60
+    }
+
+    private fun simulateInfectiousPeriod(strand: Strand): Double /* s */ {
+        // TODO(aapeli): gamma dist
+        return strand.infectious_period_days * 24 * 60 * 60
+    }
+
+    private fun computeInfectionProbability(strand: Strand, duration: Long /* s */, distance: Double /* m */): Double {
+        // TODO(aapeli): use time/distance
+        return strand.infection_probability
     }
 
     suspend fun update(context: Context) {
@@ -132,12 +149,14 @@ object CD {
                 val medianTxPower = txPowers[txPowers.size / 2]
                 val medianRSSI = RSSIs[RSSIs.size / 2]
 
+                // refer to https://stackoverflow.com/a/24245724
+                // RSSI = -10 n log d + A, "in free space, n=2"
+                val n = 2
+                val dist = exp((medianRSSI - medianTxPower).toDouble() / (-10 * n))
 
+                val time = (last_seen - first_seen) / 1000 // s
 
-                val time = last_seen - first_seen // ms
-                val median_distance = 2 // TODO(aapeli): units???
-
-                // TODO(aapeli): QQQQ, start here!
+                Log.i(TAG, "Computed duration of encounter: " + time.toString() + " s, distance: " + dist + " m")
 
                 val strand_ids = SafeBluesProtos.ShareList.parseFrom(record.shareList).strandsList
                 Log.i(TAG, "Strands: " + strand_ids.toString())
@@ -154,8 +173,7 @@ object CD {
                         Log.i(TAG, record.tempId + " advertised strand we are already infected with: " + strand_id)
                     } else {
                         Log.i(TAG, "Got strand: " + strand_id)
-                        // TODO(aapeli): use time/distance
-                        infectWithProb(context, strand.strand_id, strand.infection_probability)
+                        infectWithProb(context, strand.strand_id, computeInfectionProbability(strand, time, dist))
                     }
                 }
 
