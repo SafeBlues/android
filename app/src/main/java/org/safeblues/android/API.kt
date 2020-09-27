@@ -50,9 +50,13 @@ object API {
                         start_time = toMillis(strand.startTime),
                         end_time = toMillis(strand.endTime),
                         seeding_probability = strand.seedingProbability,
-                        infection_probability = strand.infectionProbability,
-                        incubation_period_days = strand.incubationPeriodDays,
-                        infectious_period_days = strand.infectiousPeriodDays
+                        infection_probability_map_p = strand.infectionProbabilityMapP,
+                        infection_probability_map_k = strand.infectionProbabilityMapK,
+                        infection_probability_map_l = strand.infectionProbabilityMapL,
+                        incubation_period_hours_alpha = strand.incubationPeriodHoursAlpha,
+                        incubation_period_hours_beta = strand.incubationPeriodHoursBeta,
+                        infectious_period_hours_alpha = strand.infectiousPeriodHoursAlpha,
+                        infectious_period_hours_beta = strand.infectiousPeriodHoursBeta
                     )
                 )
             }
@@ -89,6 +93,7 @@ object API {
         if (currentTempId == null) {
             val tempId = Base64.encodeToString(Random.nextBytes(16), Base64.DEFAULT)
             val now = System.currentTimeMillis()
+            // TODO(aapeli): change to 60 min in final version?
             val record = TempID(tempId, now, now + 10 * 60 * 1000)
 
             runBlocking {

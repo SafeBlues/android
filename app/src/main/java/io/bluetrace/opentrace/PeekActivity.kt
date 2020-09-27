@@ -109,7 +109,7 @@ class PeekActivity : AppCompatActivity() {
 
         val serviceUUID = BuildConfig.BLE_SSID
         info.text =
-            "SSID: ${serviceUUID.substring(serviceUUID.length - 4)}. TempID: ${API.getCurrentTempID(applicationContext)}"
+            "SSID: ${serviceUUID.substring(serviceUUID.length - 4)}.\nAddr: ${android.provider.Settings.Secure.getString(applicationContext.getContentResolver(), "bluetooth_address")}.\nTempID: ${API.getCurrentTempID(applicationContext)}"
 
         if (!BuildConfig.DEBUG) {
             start.visibility = View.GONE

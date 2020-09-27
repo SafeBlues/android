@@ -2,13 +2,18 @@ package org.safeblues.android
 
 import android.content.Context
 import android.util.Log
-import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecord
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordDatabase
 import org.safeblues.android.persistence.Strand
 import org.safeblues.android.persistence.StrandDatabase
 import org.safeblues.api.SafeBluesProtos
+import umontreal.ssj.probdist.GammaDist
+import umontreal.ssj.randvar.GammaAcceptanceRejectionGen
+import umontreal.ssj.randvar.RandomVariateGen
+import umontreal.ssj.rng.LFSR113
+import umontreal.ssj.rng.RandomStream
 import java.security.SecureRandom
 import kotlin.math.exp
+
 
 /*
 # Course of disease logic
@@ -30,6 +35,7 @@ object CD {
     private val TAG = "SB_CD"
 
     private val rand = SecureRandom()
+    val stream: RandomStream = LFSR113()
 
     // after we stop seeing a device, how long to wait before assuming it's gone?
     // a too large value will stop the disease from spreading correctly
@@ -37,11 +43,33 @@ object CD {
     private final val PROCESS_DELAY_MS = 10*1000 // TODO(aapeli): make 15 min, not 30 sec
 
     private fun uniform(): Double {
-        // gets a U[0,1] secure random double
-        return rand.nextDouble()
+        // gets a U[0,1] random double
+        return stream.nextDouble()
     }
 
-    private suspend fun infect(context: Context, strand_id: Long) {
+    private fun gamma(alpha: Double, beta: Double): Double {
+        // this is not particularly efficient to create a new generator object each time, but we
+        // call it so rarely it makes practically no difference
+        return GammaAcceptanceRejectionGen(stream, GammaDist(alpha, beta)).nextDouble()
+    }
+
+    private fun simulateIncubationPeriod(strand: Strand): Double /* s */ {
+        return gamma(strand.incubation_period_hours_alpha, strand.incubation_period_hours_beta)
+    }
+
+    private fun simulateInfectiousPeriod(strand: Strand): Double /* s */ {
+        return gamma(strand.infectious_period_hours_alpha, strand.infectious_period_hours_beta)
+    }
+
+    private fun computeInfectionProbability(
+        strand: Strand,
+        duration: Double /* s */,
+        distance: Double /* m */
+    ): Double {
+        return strand.infection_probability_map_p * (1-Math.pow(duration, -strand.infection_probability_map_k)) * Math.pow(distance, -strand.infection_probability_map_l)
+    }
+
+    private fun infect(context: Context, strand_id: Long) {
         // infects us with the given strand, practically just generates realisations of incubation
         // and infection distributions
         val now = System.currentTimeMillis()
@@ -51,7 +79,10 @@ object CD {
         if (strand == null) {
             Log.e(TAG, "Tried to infect with strand not found, strand_id: " + strand_id.toString())
         } else if (strand.been_infected) {
-            Log.w(TAG, "Tried to infect with strand already infected, strand_id: " + strand_id.toString())
+            Log.w(
+                TAG,
+                "Tried to infect with strand already infected, strand_id: " + strand_id.toString()
+            )
         } else {
             // TODO(aapeli): compute random variates
             Log.w(TAG, "Seeding without seeding! TODO")
@@ -75,21 +106,6 @@ object CD {
             infectWithProb(context, strand.strand_id, strand.seeding_probability)
             strandDb.markStrandInitialised(strand.strand_id)
         }
-    }
-
-    private fun simulateIncubationPeriod(strand: Strand): Double /* s */ {
-        // TODO(aapeli): gamma dist
-        return strand.incubation_period_days * 24 * 60 * 60
-    }
-
-    private fun simulateInfectiousPeriod(strand: Strand): Double /* s */ {
-        // TODO(aapeli): gamma dist
-        return strand.infectious_period_days * 24 * 60 * 60
-    }
-
-    private fun computeInfectionProbability(strand: Strand, duration: Long /* s */, distance: Double /* m */): Double {
-        // TODO(aapeli): use time/distance
-        return strand.infection_probability
     }
 
     suspend fun update(context: Context) {
@@ -154,9 +170,12 @@ object CD {
                 val n = 2
                 val dist = exp((medianRSSI - medianTxPower).toDouble() / (-10 * n))
 
-                val time = (last_seen - first_seen) / 1000 // s
+                val time = (last_seen - first_seen).toDouble() / 1000 // s
 
-                Log.i(TAG, "Computed duration of encounter: " + time.toString() + " s, distance: " + dist + " m")
+                Log.i(
+                    TAG,
+                    "Computed duration of encounter: " + time.toString() + " s, distance: " + dist + " m"
+                )
 
                 val strand_ids = SafeBluesProtos.ShareList.parseFrom(record.shareList).strandsList
                 Log.i(TAG, "Strands: " + strand_ids.toString())
@@ -168,12 +187,24 @@ object CD {
                     } else if (strand.start_time > now || strand.end_time < now) {
                         Log.w(TAG, record.tempId + " advertised inactive strand, id: " + strand_id)
                     } else if (!strand.seeding_simulated) {
-                        Log.w(TAG, record.tempId + " advertised strand we haven't initialised yet, id: " + strand_id)
+                        Log.w(
+                            TAG,
+                            record.tempId + " advertised strand we haven't initialised yet, id: " + strand_id
+                        )
                     } else if (strand.been_infected) {
-                        Log.i(TAG, record.tempId + " advertised strand we are already infected with: " + strand_id)
+                        Log.i(
+                            TAG,
+                            record.tempId + " advertised strand we are already infected with: " + strand_id
+                        )
                     } else {
                         Log.i(TAG, "Got strand: " + strand_id)
-                        infectWithProb(context, strand.strand_id, computeInfectionProbability(strand, time, dist))
+                        infectWithProb(
+                            context, strand.strand_id, computeInfectionProbability(
+                                strand,
+                                time,
+                                dist
+                            )
+                        )
                     }
                 }
 
@@ -186,7 +217,10 @@ object CD {
         // Double check
         records_needing_processing = db.getNeedingProcessing(now - PROCESS_DELAY_MS)
         if (records_needing_processing.size != 0) {
-            Log.e(TAG, "Still need to process " + records_needing_processing.size.toString() + " records after processing???")
+            Log.e(
+                TAG,
+                "Still need to process " + records_needing_processing.size.toString() + " records after processing???"
+            )
         }
     }
 }

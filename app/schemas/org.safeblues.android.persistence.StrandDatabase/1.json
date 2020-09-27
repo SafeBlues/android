@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5c8a7e4dc9cbe0612031a988410abdfd",
+    "identityHash": "305818163c1b818f4a6b18054cfe9207",
     "entities": [
       {
         "tableName": "strands",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`timestamp` INTEGER NOT NULL, `seeding_simulated` INTEGER NOT NULL, `been_infected` INTEGER NOT NULL, `my_incubating_end_time` INTEGER, `my_infected_end_time` INTEGER, `strand_id` INTEGER NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER NOT NULL, `seeding_probability` REAL NOT NULL, `infection_probability` REAL NOT NULL, `incubation_period_days` REAL NOT NULL, `infectious_period_days` REAL NOT NULL, PRIMARY KEY(`strand_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`timestamp` INTEGER NOT NULL, `seeding_simulated` INTEGER NOT NULL, `been_infected` INTEGER NOT NULL, `my_incubating_end_time` INTEGER, `my_infected_end_time` INTEGER, `strand_id` INTEGER NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER NOT NULL, `seeding_probability` REAL NOT NULL, `infection_probability_map_p` REAL NOT NULL, `infection_probability_map_k` REAL NOT NULL, `infection_probability_map_l` REAL NOT NULL, `incubation_period_hours_alpha` REAL NOT NULL, `incubation_period_hours_beta` REAL NOT NULL, `infectious_period_hours_alpha` REAL NOT NULL, `infectious_period_hours_beta` REAL NOT NULL, PRIMARY KEY(`strand_id`))",
         "fields": [
           {
             "fieldPath": "timestamp",
@@ -63,20 +63,44 @@
             "notNull": true
           },
           {
-            "fieldPath": "infection_probability",
-            "columnName": "infection_probability",
+            "fieldPath": "infection_probability_map_p",
+            "columnName": "infection_probability_map_p",
             "affinity": "REAL",
             "notNull": true
           },
           {
-            "fieldPath": "incubation_period_days",
-            "columnName": "incubation_period_days",
+            "fieldPath": "infection_probability_map_k",
+            "columnName": "infection_probability_map_k",
             "affinity": "REAL",
             "notNull": true
           },
           {
-            "fieldPath": "infectious_period_days",
-            "columnName": "infectious_period_days",
+            "fieldPath": "infection_probability_map_l",
+            "columnName": "infection_probability_map_l",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "incubation_period_hours_alpha",
+            "columnName": "incubation_period_hours_alpha",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "incubation_period_hours_beta",
+            "columnName": "incubation_period_hours_beta",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infectious_period_hours_alpha",
+            "columnName": "infectious_period_hours_alpha",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infectious_period_hours_beta",
+            "columnName": "infectious_period_hours_beta",
             "affinity": "REAL",
             "notNull": true
           }
@@ -94,7 +118,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5c8a7e4dc9cbe0612031a988410abdfd')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '305818163c1b818f4a6b18054cfe9207')"
     ]
   }
 }

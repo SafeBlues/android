@@ -206,6 +206,9 @@ dependencies {
     implementation "io.grpc:grpc-stub:$grpc_version"
 
     compileOnly "javax.annotation:javax.annotation-api:1.2"
+
+    // Stochastic Simulation in Java, for generating sampling random numbers
+    implementation "ca.umontreal.iro.simul:ssj:3.3.1"
 }
 
 protobuf {
