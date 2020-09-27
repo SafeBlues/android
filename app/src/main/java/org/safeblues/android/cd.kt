@@ -84,7 +84,6 @@ object CD {
                 "Tried to infect with strand already infected, strand_id: " + strand_id.toString()
             )
         } else {
-            // TODO(aapeli): compute random variates
             Log.w(TAG, "Seeding without seeding! TODO")
             val incubation_end = now + Math.round(simulateIncubationPeriod(strand) * 1000)
             val infection_end = incubation_end + Math.round(simulateInfectiousPeriod(strand) * 1000)
@@ -156,7 +155,7 @@ object CD {
 
                 if (txPowers.size == 0 || RSSIs.size == 0) {
                     Log.e(TAG, "txPowers/RSSIs empty")
-                    return
+                    continue
                 }
 
                 txPowers.sort()
