@@ -42,11 +42,9 @@ message Strand {
 }
 
 message InfectionReport {
-    string client_id = 1;
-
-    repeated int64 current_incubating_strands = 2;
-    repeated int64 current_infected_strands = 3;
-    repeated int64 current_removed_strands = 4;
+    repeated int64 current_incubating_strands = 1;
+    repeated int64 current_infected_strands = 2;
+    repeated int64 current_removed_strands = 3;
 }
 
 message StrandUpdate {

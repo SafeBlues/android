@@ -3,18 +3,20 @@ package org.safeblues.android
 import android.content.Context
 import android.util.Base64
 import android.util.Log
-import android.widget.Toast
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import io.grpc.ManagedChannelBuilder
 import org.safeblues.android.persistence.Strand
 import org.safeblues.android.persistence.StrandDatabase
 import org.safeblues.api.SafeBluesGrpcKt
 import org.safeblues.api.SafeBluesProtos
 import com.google.protobuf.util.Timestamps.toMillis
-import io.grpc.Grpc
 import kotlinx.coroutines.runBlocking
 import org.safeblues.android.persistence.TempID
 import org.safeblues.android.persistence.TempIDDatabase
 import java.lang.Exception
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 object API {
@@ -32,12 +34,26 @@ object API {
      */
     private val TAG = "SB_API"
 
-    private val channel = ManagedChannelBuilder.forAddress("api.safeblues.org", 8443).useTransportSecurity().build()
-    private val stub = SafeBluesGrpcKt.SafeBluesCoroutineStub(channel)
+    fun ensureSyncerScheduled(context: Context) {
+        val repeatingRequest = PeriodicWorkRequestBuilder<Syncer>(24,
+            TimeUnit.HOURS
+        ).build()
 
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            Syncer.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            repeatingRequest)
+    }
 
-    suspend fun syncStrandsWithServer(context: Context) {
+    private fun getStub(): SafeBluesGrpcKt.SafeBluesCoroutineStub {
+        val channel = ManagedChannelBuilder.forAddress("api.safeblues.org", 8443).useTransportSecurity().build()
+        return SafeBluesGrpcKt.SafeBluesCoroutineStub(channel)
+    }
+
+    suspend fun syncStrandsWithServer(context: Context): Boolean {
         try {
+            val stub = getStub()
+
             val res = stub.pull(SafeBluesProtos.Empty.getDefaultInstance())
             Log.i(TAG, "Got strands from server: " + res.toString())
 
@@ -63,14 +79,46 @@ object API {
 
             CD.seedStrands(context)
 
-            // TODO(aapeli): prune old strands
+            // TODO: prune old strands
 
             Log.i(TAG,
                 "Active strands: " + strandDao.getActiveStrands(System.currentTimeMillis())
                     .toString()
             )
+            return true
         } catch (e: Exception) {
             Log.e(TAG, "Failed to sync: " + e.toString())
+            return false
+        }
+    }
+
+    suspend fun pushStatsToServer(context: Context): Boolean {
+        try {
+            val stub = getStub()
+            val strandDao = StrandDatabase.getDatabase(context).strandDao()
+            val ret = SafeBluesProtos.InfectionReport.newBuilder()
+
+            val now = System.currentTimeMillis()
+
+            for (strand in strandDao.getIncubatingStrands(now)) {
+                ret.addCurrentIncubatingStrands(strand.strand_id)
+            }
+
+            for (strand in strandDao.getInfectedStrands(now)) {
+                ret.addCurrentInfectedStrands(strand.strand_id)
+            }
+
+            for (strand in strandDao.getRemovedStrands(now)) {
+                ret.addCurrentRemovedStrands(strand.strand_id)
+            }
+
+            val report = ret.build()
+
+            stub.report(report)
+            return true
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to sync: " + e.toString())
+            return false
         }
     }
 
@@ -104,13 +152,5 @@ object API {
         } else {
             return currentTempId.temp_id
         }
-    }
-
-    suspend fun ping() {
-        val req = SafeBluesProtos.Ping.newBuilder().apply {
-            nonce = 32
-        }.build()
-        val res = stub.pingServer(req)
-        Log.i(TAG, res.nonce.toString())
     }
 }

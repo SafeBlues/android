@@ -33,6 +33,18 @@ interface StrandDao {
     @Query("DELETE FROM strands WHERE end_time < :before")
     suspend fun purgeOldRecords(before: Long)
 
+    @Query("SELECT * FROM strands WHERE my_incubating_end_time is NULL AND my_infected_end_time is NULL AND start_time - 24*60*60*1000 < :time AND :time < end_time + 24*60*60*1000")
+    fun getSusceptibleStrands(time: Long): List<Strand>
+
+    @Query("SELECT * FROM strands WHERE :time < my_incubating_end_time AND start_time - 24*60*60*1000 < :time AND :time < end_time + 24*60*60*1000")
+    fun getIncubatingStrands(time: Long): List<Strand>
+
+    @Query("SELECT * FROM strands WHERE my_incubating_end_time < :time AND :time < my_infected_end_time AND start_time - 24*60*60*1000 < :time AND :time < end_time + 24*60*60*1000")
+    fun getInfectedStrands(time: Long): List<Strand>
+
+    @Query("SELECT * FROM strands WHERE my_infected_end_time < :time AND start_time - 24*60*60*1000 < :time AND :time < end_time + 24*60*60*1000")
+    fun getRemovedStrands(time: Long): List<Strand>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(record: Strand)
 

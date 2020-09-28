@@ -126,6 +126,15 @@ android {
     androidExtensions {
         experimental = true
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 
@@ -209,6 +218,8 @@ dependencies {
 
     // Stochastic Simulation in Java, for generating sampling random numbers
     implementation "ca.umontreal.iro.simul:ssj:3.3.1"
+
+    implementation "androidx.work:work-runtime-ktx:2.4.0"
 }
 
 protobuf {
