@@ -91,7 +91,7 @@ object CD {
         }
     }
 
-    private suspend fun infectWithProb(context: Context, strand_id: Long, prob: Double) {
+    private fun infectWithProb(context: Context, strand_id: Long, prob: Double) {
         if (uniform() < prob) {
             infect(context, strand_id)
         }

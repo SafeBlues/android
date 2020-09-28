@@ -35,7 +35,11 @@ object API {
     private val TAG = "SB_API"
 
     fun ensureSyncerScheduled(context: Context) {
+        Log.i(TAG, "Ensuring syncer is alive")
+        // Runs every 24 hours in the last hour
         val repeatingRequest = PeriodicWorkRequestBuilder<Syncer>(24,
+            TimeUnit.HOURS,
+            1,
             TimeUnit.HOURS
         ).build()
 

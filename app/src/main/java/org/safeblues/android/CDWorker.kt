@@ -13,6 +13,7 @@ class CDWorker : JobIntentService() {
         Log.i(TAG, "Trying to runBlocking")
         runBlocking {
             CD.update(this@CDWorker.applicationContext)
+            API.ensureSyncerScheduled(this@CDWorker.applicationContext)
         }
     }
 
