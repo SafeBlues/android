@@ -12,6 +12,8 @@ import io.bluetrace.opentrace.MainActivity
 import io.bluetrace.opentrace.Preference
 import io.bluetrace.opentrace.R
 import io.bluetrace.opentrace.logging.CentralLog
+import kotlinx.coroutines.runBlocking
+import org.safeblues.android.API
 
 class SetupCompleteFragment : OnboardingFragmentInterface() {
     private var listener: OnFragmentInteractionListener? = null
@@ -31,6 +33,12 @@ class SetupCompleteFragment : OnboardingFragmentInterface() {
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "P1234")
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Onboard Completed for Android Device")
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, bundle)
+
+        // update strands
+        runBlocking {
+            API.syncStrandsWithServer(this@SetupCompleteFragment.mainContext)
+        }
+
         var intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         context?.startActivity(intent)
