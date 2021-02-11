@@ -6,19 +6,19 @@
     <string name="ble_not_supported">This device does not support BLE</string>
 
     <string name="tv_onboarding_title">Safe Blues</string>
-    <string name="tv_onboarding_desc">Help track the spread of COVID-19 by running Safe Blues on your phone.</string>
+    <string name="tv_onboarding_desc">Help study virus spread by running Safe Blues on your phone.</string>
     <string name="tv_onboarding_desc_sub">Visit https://safeblues.org for more information.</string>
     <string name="i_want_to_help">Get started</string>
 
     <string name="tv_howitworks_title">How Safe Blues works</string>
-    <string name="tv_howitworks_explanation_1">We use Bluetooth signals to simulate the spread of COVID-19 between your phone and the phones of other Safe Blues users around you.</string>
-    <string name="tv_howitworks_explanation_2">This data allows us to estimate the spread characteristics of COVID-19 and determine the effectiveness of policy without storing your health information and while reducing your privacy risk.</string>
+    <string name="tv_howitworks_explanation_1">We use Bluetooth signals to simulate the spread of digital viruses between your phone and the phones of other Safe Blues users around you.</string>
+    <string name="tv_howitworks_explanation_2">This data allows us to estimate the spread characteristics of real virus and determine the effectiveness of policy without storing your health information and while reducing your privacy risk.</string>
     <string name="tv_howitworks_explanation_3">The app will communicate with Safe Blues servers daily to sync strand information.</string>
     <string name="tv_howitworks_button">Continue</string>
 
     <string name="mobile_number">Mobile number</string>
     <string name="register_number">Register your mobile number</string>
-    <string name="register_number_details">We\'ll contact you if you had close contact with a COVID-19 case.</string>
+    <string name="register_number_details">You shouldn\'t see this.</string>
     <string name="register_number_family">Setting up for your family? \nUse their number instead of yours.</string>
     <string name="invalid_length">Needs to be 8-digits</string>
     <string name="invalid_number">Invalid Mobile Number</string>
@@ -46,8 +46,8 @@
     <string name="title_upload">Upload</string>
     <string name="title_help">Help</string>
 
-    <string name="how_to_help">How you can help stop the spread of COVID-19</string>
-    <string name="help_action">Keep app open, and let it run in the background until the end of the outbreak</string>
+    <string name="how_to_help">How you can help virus spread research</string>
+    <string name="help_action">Keep app open, and let it run in the background until the end of the experiment</string>
 
     <string name="app_permission_status">App Permissions Status</string>
     <string name="bluetooth_on">Bluetooth: On</string>
@@ -70,7 +70,7 @@
     <string name="setup_incomplete">Setup is incomplete!</string>
     <string name="ack_title">Your consent is needed for the following:</string>
     <string name="ack_mobile">To store your mobile number in a secured OpenTrace registry</string>
-    <string name="ack_data">To allow OpenTrace users to send OTC information of encounters with you, if they are confirmed or suspected to have COVID-19</string>
+    <string name="ack_data">This text should never be visible.</string>
     <string name="otp">Please enter the OTP sent to your mobile phone via sms</string>
     <string name="keep_push_on">Keep push notifications on too, so we can alert you if the app is not scanning.</string>
     <string name="verification_failed">Verification failed. Please try again</string>
@@ -89,5 +89,5 @@
     <string name="service_not_ok_body">OpenTrace is not scanning.</string>
     <string name="service_not_ok_action">Check app now</string>
 
-    <string name="share_message">Join me in stopping the spread of COVID-19! Download OpenTrace. Go to: https://bluetrace.io</string>
+    <string name="share_message">Join me in the SafeBlues experiment! Go to: https://safeblues.org</string>
 </resources>
