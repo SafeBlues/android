@@ -47,6 +47,17 @@ object API {
             Syncer.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             repeatingRequest)
+
+        val repeatingRequestExperiment = PeriodicWorkRequestBuilder<Experiment>(15,
+            TimeUnit.MINUTES,
+            5,
+            TimeUnit.MINUTES
+        ).build()
+
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            Experiment.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            repeatingRequestExperiment)
     }
 
     private fun getStub(): SafeBluesGrpcKt.SafeBluesCoroutineStub {

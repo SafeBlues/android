@@ -18,6 +18,9 @@ object Preference {
 
     private const val ANNOUNCEMENT = "ANNOUNCEMENT"
 
+
+    private const val EXPERIMENT_PHONE_ID = "EXPERIMENT_PHONE_ID"
+
     fun putHandShakePin(context: Context, value: String) {
         context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
             .edit().putString(HANDSHAKE_PIN, value).apply()
@@ -128,5 +131,15 @@ object Preference {
     ) {
         context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
             .unregisterOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun putExperimentPhoneId(context: Context, value: String) {
+        context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+            .edit().putString(EXPERIMENT_PHONE_ID, value).apply()
+    }
+
+    fun getExperimentPhoneId(context: Context): String {
+        return context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+            .getString(EXPERIMENT_PHONE_ID, "unknown") ?: "unknown"
     }
 }

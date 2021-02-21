@@ -98,3 +98,24 @@ message ConnRec {
     int32 rssi = 4;
     int32 txPower = 5;
 }
+
+// QQQQ QQQQ QQQQ QQQQ QQQQ QQQQ QQQQ QQQQ QQQQ QQQQ QQQQ QQQQ QQQQ QQQQ QQQQ
+
+service ExperimentAPI {
+    // report the user's on campus info, and how much they've been running the app, to the experiment server
+    rpc ReportStatus(ReportStatusRequest) returns (ReportStatusResponse);
+}
+
+message PhoneStatus {
+    google.protobuf.Timestamp time = 1;
+    bool on_campus = 2;
+}
+
+message ReportStatusRequest {
+    string phone_id = 1;
+    repeated PhoneStatus statuses = 2;
+}
+
+message ReportStatusResponse {
+    bool success = 1;
+}
