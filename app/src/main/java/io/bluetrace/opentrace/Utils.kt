@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -39,7 +40,11 @@ object Utils {
     private const val TAG = "Utils"
 
     fun getRequiredPermissions(): Array<String> {
-        return arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        if (Build.VERSION >= Build.VERSION_CODES.Q) {
+            return arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        } else {
+            return arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
     }
 
     fun getBatteryOptimizerExemptionIntent(packageName: String): Intent {

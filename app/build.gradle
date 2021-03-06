@@ -9,6 +9,8 @@ apply plugin: "com.cookpad.android.plugin.license-tools"
 
 apply plugin: "com.google.protobuf"
 
+apply plugin: 'com.android.application'
+
 //apply plugin: 'com.jaredsburrows.license'
 
 buildscript {
@@ -156,6 +158,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
 
     // Room components
     def room_version = "2.2.3"

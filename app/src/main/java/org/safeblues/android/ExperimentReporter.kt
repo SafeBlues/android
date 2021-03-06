@@ -1,23 +1,13 @@
 package org.safeblues.android
 
 import android.content.Context
-import android.os.Build
-import android.util.Base64
 import android.util.Log
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import com.google.android.gms.location.LocationServices
 import io.grpc.ManagedChannelBuilder
-import org.safeblues.api.SafeBluesGrpcKt
 import org.safeblues.api.SafeBluesProtos
-import com.google.protobuf.util.Timestamps.toMillis
-import io.bluetrace.opentrace.TracerApp
-import kotlinx.coroutines.runBlocking
 import org.safeblues.android.persistence.*
 import org.safeblues.api.ExperimentAPIGrpcKt
 import java.lang.Exception
-import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 import com.google.protobuf.util.Timestamps.fromMillis
 import io.bluetrace.opentrace.Preference
 
@@ -29,7 +19,24 @@ object ExperimentReporter {
         return ExperimentAPIGrpcKt.ExperimentAPICoroutineStub(channel)
     }
 
-    suspend fun doExperimentMaintenance(context: Context): Boolean {
+    suspend fun geofencingEtc(context: Context): Boolean {
+        try {
+            val experimentDao = ExperimentDatabase.getDatabase(context).experimentDao()
+
+            experimentDao.insert(
+                ExperimentEntry(
+                    on_campus = true
+                )
+            )
+
+            return true
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to do geofencing etc: " + e.toString())
+            return false
+        }
+    }
+
+    suspend fun pushExperimentStatus(context: Context): Boolean {
         try {
             val stub = getStub()
             val experimentDao = ExperimentDatabase.getDatabase(context).experimentDao()

@@ -17,13 +17,13 @@ class Experiment(appContext: Context, params: WorkerParameters) : Worker(appCont
         Log.i(TAG, "Doing work on EXPERIMENT")
         try {
             runBlocking {
-                ExperimentReporter.doExperimentMaintenance(applicationContext)
+                ExperimentReporter.geofencingEtc(applicationContext)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Experiment failed: $e")
+            Log.e(TAG, "Experiment stuff failed: $e")
             return Result.retry()
         }
-        Log.i(TAG, "Experiment success")
+        Log.i(TAG, "Experiment stuff success")
         return Result.success()
     }
 }

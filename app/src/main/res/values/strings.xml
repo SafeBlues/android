@@ -1,7 +1,7 @@
 <resources>
     <string name="see_connections">See connections</string>
     <string name="stop">Stop</string>
-    <string name="permission_location_rationale">Please allow Location Permissions - Google requires this for your phone to scan for another phone’s Bluetooth. We do not use or store your location.</string>
+    <string name="permission_location_rationale">Please allow Location Permissions - Google requires this for your phone to scan for another phone’s Bluetooth. We also use it to keep track of the time you spend on the University of Auckland campus. Your location will not be transmitted or stored, only whether you’re within the campus area or not.</string>
     <string name="permission_write_rationale">OpenTrace needs save files for logs (Debug builds only)</string>
     <string name="ble_not_supported">This device does not support BLE</string>
 

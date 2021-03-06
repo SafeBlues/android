@@ -1,12 +1,22 @@
 package io.bluetrace.opentrace
 
+import android.Manifest
 import android.app.ActivityManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.GeofencingRequest
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_main_new.*
@@ -14,6 +24,7 @@ import io.bluetrace.opentrace.fragment.ForUseByOTCFragment
 import io.bluetrace.opentrace.fragment.HomeFragment
 import io.bluetrace.opentrace.logging.CentralLog
 import org.safeblues.android.API
+import org.safeblues.android.geofence.GeofenceReceiver
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +34,14 @@ class MainActivity : AppCompatActivity() {
     private var mNavigationLevel = 0
     var LAYOUT_MAIN_ID = 0
     private var selected = 0
+
+    lateinit var mGeofencingClient: GeofencingClient
+
+    private val geofencePendingIntent: PendingIntent by lazy {
+        val intent = Intent(this, GeofenceReceiver::class.java)
+        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_new)
@@ -30,6 +49,33 @@ class MainActivity : AppCompatActivity() {
         API.ensureSyncerScheduled(applicationContext)
 
         Utils.startBluetoothMonitoringService(this)
+
+        mGeofencingClient = LocationServices.getGeofencingClient( this@MainActivity )
+
+        val mahGeoFence = Geofence.Builder()
+            .setRequestId("MAH_REQUAST")
+            .setCircularRegion(40.80869, -73.96158, 200.0f)
+            .setExpirationDuration(Geofence.NEVER_EXPIRE)
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_EXIT)
+            .build()
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: fix this
+            Log.e(TAG, "Some permission issue or something")
+        } else {
+            mGeofencingClient.addGeofences(GeofencingRequest.Builder().addGeofence(mahGeoFence).build(), geofencePendingIntent)?.run {
+                addOnSuccessListener {
+                    Log.d(TAG, "Succesfully added MAH geofence")
+                }
+                addOnFailureListener {
+                    Log.d(TAG, "Failed to add geofence" + it.toString())
+                }
+            }
+        }
 
         LAYOUT_MAIN_ID = R.id.content
 
