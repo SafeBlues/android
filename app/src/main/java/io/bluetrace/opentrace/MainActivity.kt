@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             .setRequestId("MAH_REQUAST")
             .setCircularRegion(40.80869, -73.96158, 200.0f)
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
-            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_EXIT)
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
             .build()
 
         if (ActivityCompat.checkSelfPermission(
