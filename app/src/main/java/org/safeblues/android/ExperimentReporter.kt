@@ -10,6 +10,7 @@ import org.safeblues.api.ExperimentAPIGrpcKt
 import java.lang.Exception
 import com.google.protobuf.util.Timestamps.fromMillis
 import io.bluetrace.opentrace.Preference
+import java.time.Instant
 
 object ExperimentReporter {
     private val TAG = "SB_XPR"
@@ -21,14 +22,6 @@ object ExperimentReporter {
 
     suspend fun geofencingEtc(context: Context): Boolean {
         try {
-            val experimentDao = ExperimentDatabase.getDatabase(context).experimentDao()
-
-            experimentDao.insert(
-                ExperimentEntry(
-                    on_campus = true
-                )
-            )
-
             return true
         } catch (e: Exception) {
             Log.e(TAG, "Failed to do geofencing etc: " + e.toString())
@@ -44,10 +37,11 @@ object ExperimentReporter {
             val ret = SafeBluesProtos.ReportStatusRequest.newBuilder()
                 .setPhoneId(Preference.getExperimentPhoneId(context))
 
-            for (entry in experimentDao.getExperimentData()) {
+            for (entry in experimentDao.getUnsentExperimentData()) {
                 ret.addStatuses(SafeBluesProtos.PhoneStatus.newBuilder().apply{
-                    this.time = fromMillis(entry.timestamp)
-                    this.onCampus = entry.on_campus
+                    // exit_time is guaranteed to be non-null here due to spec in sql query
+                    this.duration = (((entry.exit_time ?: 0) - entry.enter_time) / (1000*60*15)).toDouble()
+                    this.truncatedEntry = fromMillis(entry.enter_time / 86400000)
                 })
             }
             val report = ret.build()

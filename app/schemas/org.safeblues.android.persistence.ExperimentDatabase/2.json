@@ -1,16 +1,22 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "7a25370bf22785e8158f0cd33af10580",
+    "version": 2,
+    "identityHash": "4a253ca43526b10e0d938744539f6d2e",
     "entities": [
       {
         "tableName": "experiment_data",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sent` INTEGER NOT NULL, `enter_time` INTEGER NOT NULL, `exit_time` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER NOT NULL, `sent` INTEGER NOT NULL, `enter_time` INTEGER NOT NULL, `exit_time` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -46,7 +52,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7a25370bf22785e8158f0cd33af10580')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4a253ca43526b10e0d938744539f6d2e')"
     ]
   }
 }

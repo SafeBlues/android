@@ -3,51 +3,42 @@ package org.safeblues.android.geofence
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
 import com.google.android.gms.location.*
-import io.bluetrace.opentrace.Utils
-import io.bluetrace.opentrace.logging.CentralLog
+import kotlinx.coroutines.runBlocking
+import org.safeblues.android.persistence.ExperimentDatabase
+import java.lang.Exception
 
 class GeofenceReceiver : BroadcastReceiver() {
     private val TAG = "SB_GFR"
 
-    override fun onReceive(context: Context?, intent: Intent?) {
-        val geofencingEvent = GeofencingEvent.fromIntent(intent)
-        if (geofencingEvent.hasError()) {
-            val errorMessage = GeofenceStatusCodes
-                .getStatusCodeString(geofencingEvent.errorCode)
-            Log.e(TAG, errorMessage)
-            return
-        }
+    override fun onReceive(context: Context, intent: Intent?) {
+        try {
+            val geofencingEvent = GeofencingEvent.fromIntent(intent)
+            if (geofencingEvent.hasError()) {
+                val errorMessage = GeofenceStatusCodes
+                    .getStatusCodeString(geofencingEvent.errorCode)
+                Log.e(TAG, errorMessage)
+                return
+            }
 
-        // Get the transition type.
-        val geofenceTransition = geofencingEvent.geofenceTransition
+            // Get the transition type.
+            val geofenceTransition = geofencingEvent.geofenceTransition
 
-        // Test that the reported transition was of interest.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER || geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+            val experimentDao = ExperimentDatabase.getDatabase(context).experimentDao()
 
-            // Get the geofences that were triggered. A single event can trigger
-            // multiple geofences.
-            val triggeringGeofences = geofencingEvent.triggeringGeofences
-//
-
-            Log.d(TAG, "Well something happened...")
-
-//            // Get the transition details as a String.
-//            val geofenceTransitionDetails = getGeofenceTransitionDetails(
-//                this,
-//                geofenceTransition,
-//                triggeringGeofences
-//            )
-//
-//            // Send notification and log the transition details.
-//            sendNotification(geofenceTransitionDetails)
-//            Log.i(TAG, geofenceTransitionDetails)
-        } else {
-            // Log the error.
-            Log.e(TAG, "Some sketchy sh*t happened")
+            if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+                Log.d(TAG, "Entered geofence")
+                experimentDao.enterGeofence(System.currentTimeMillis())
+            } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+                Log.d(TAG, "Left geofence")
+                experimentDao.exitGeofence(System.currentTimeMillis())
+            } else {
+                // Log the error.
+                Log.e(TAG, "Some sketchy sh*t happened")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Bit of an issue out here: " + e.toString())
         }
     }
-
 }

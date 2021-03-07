@@ -107,8 +107,8 @@ service ExperimentAPI {
 }
 
 message PhoneStatus {
-    google.protobuf.Timestamp time = 1;
-    bool on_campus = 2;
+    double duration = 1;
+    google.protobuf.Timestamp truncated_entry = 2;
 }
 
 message ReportStatusRequest {

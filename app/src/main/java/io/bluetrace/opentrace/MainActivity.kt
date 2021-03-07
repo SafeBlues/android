@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         val mahGeoFence = Geofence.Builder()
             .setRequestId("MAH_REQUAST")
-            .setCircularRegion(40.80869, -73.96158, 200.0f)
+            .setCircularRegion(40.80869, -73.96158, 1000.0f)
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
             .build()
