@@ -14,8 +14,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.tasks.Task
-import com.google.firebase.functions.FirebaseFunctions
-import com.google.firebase.functions.HttpsCallableResult
 import io.bluetrace.opentrace.bluetooth.gatt.*
 import io.bluetrace.opentrace.logging.CentralLog
 import io.bluetrace.opentrace.scheduler.Scheduler
@@ -305,22 +303,5 @@ object Utils {
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         return bluetoothAdapter != null &&
                 bluetoothAdapter.isEnabled && bluetoothAdapter.state == BluetoothAdapter.STATE_ON
-    }
-
-    fun getHandShakePin(
-        context: Context,
-        functions: FirebaseFunctions
-    ): Task<HttpsCallableResult> {
-        return functions
-            .getHttpsCallable("getHandshakePin")
-            .call()
-            .addOnSuccessListener {
-                val result: HashMap<String, Any> = it.data as HashMap<String, Any>
-                val handShakePin = result["pin"].toString()
-                Preference.putHandShakePin(context, handShakePin)
-                CentralLog.d(TAG, "Result from handshake pin: " + result.toString())
-            }.addOnFailureListener { e ->
-                CentralLog.w(TAG, "get handshake pin (failure): ${e.message}")
-            }
     }
 }

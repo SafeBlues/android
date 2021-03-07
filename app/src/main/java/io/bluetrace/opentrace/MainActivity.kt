@@ -18,7 +18,6 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_main_new.*
 import io.bluetrace.opentrace.fragment.ForUseByOTCFragment
 import io.bluetrace.opentrace.fragment.HomeFragment
@@ -113,25 +112,6 @@ class MainActivity : AppCompatActivity() {
 
         nav_view.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         goToHome()
-
-        getFCMToken()
-    }
-
-    private fun getFCMToken() {
-        FirebaseInstanceId.getInstance().instanceId
-            .addOnCompleteListener { task ->
-                if (!task.isSuccessful()) {
-                    CentralLog.w(TAG, "failed to get fcm token ${task.exception}")
-                    return@addOnCompleteListener
-                } else {
-                    // Get new Instance ID token
-                    val token = task.result?.token
-                    // Log and toast
-                    CentralLog.d(TAG, "FCM token: $token")
-                }
-            }
-
-
     }
 
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {

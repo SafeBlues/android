@@ -12,10 +12,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.*
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.functions.FirebaseFunctions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -68,7 +64,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
 
     private var job: Job = Job()
 
-    private lateinit var functions: FirebaseFunctions
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -76,9 +71,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     private lateinit var commandHandler: CommandHandler
 
     private lateinit var localBroadcastManager: LocalBroadcastManager
-
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
-    private lateinit var auth: FirebaseAuth
 
     private var notificationShown: NOTIFICATION_STATE? = null
 
@@ -106,7 +98,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         statusRecordStorage = StatusRecordStorage(this.applicationContext)
 
         setupNotifications()
-        functions = FirebaseFunctions.getInstance(BuildConfig.FIREBASE_REGION)
     }
 
     fun teardown() {
@@ -311,7 +302,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     }
 
     private fun actionHealthCheck() {
-        performUserLoginCheck()
         performHealthCheck()
         Utils.scheduleRepeatingPurge(this.applicationContext, purgeInterval)
     }
@@ -410,22 +400,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
             }
         } else {
             CentralLog.w(TAG, "Unable to start scan - bluetooth is off")
-        }
-    }
-
-    private fun performUserLoginCheck() {
-        firebaseAnalytics = FirebaseAnalytics.getInstance(applicationContext)
-        auth = FirebaseAuth.getInstance()
-        val currentUser: FirebaseUser? = auth.currentUser
-        if (currentUser == null && Preference.isOnBoarded(this)) {
-            CentralLog.d(TAG, "User is not login but has completed onboarding")
-            val bundle = Bundle()
-            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Android")
-            bundle.putString(
-                FirebaseAnalytics.Param.ITEM_NAME,
-                "Have not login yet but in main activity"
-            )
-            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle)
         }
     }
 

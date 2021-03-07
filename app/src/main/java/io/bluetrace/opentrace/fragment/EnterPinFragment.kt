@@ -13,10 +13,6 @@ import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.Task
-import com.google.firebase.functions.FirebaseFunctions
-import com.google.firebase.functions.HttpsCallableResult
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
 import com.google.gson.Gson
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -102,45 +98,6 @@ class EnterPinFragment : Fragment() {
                 .subscribe { exportedData ->
                     Log.d(TAG, "records: ${exportedData.recordList}")
                     Log.d(TAG, "status: ${exportedData.statusList}")
-
-                    getUploadToken(enterPinFragmentUploadCode.text.toString()).addOnSuccessListener {
-                        val response = it.data as HashMap<String, String>
-                        try {
-                            val uploadToken = response["token"]
-                            CentralLog.d(TAG, "uploadToken: $uploadToken")
-                            var task = writeToInternalStorageAndUpload(
-                                TracerApp.AppContext,
-                                exportedData.recordList,
-                                exportedData.statusList,
-                                uploadToken
-                            )
-                            task.addOnFailureListener {
-                                CentralLog.d(TAG, "failed to upload")
-                                var myParentFragment: UploadPageFragment =
-                                    (parentFragment as UploadPageFragment)
-                                myParentFragment.turnOffLoadingProgress()
-                                enterPinFragmentErrorMessage.visibility = View.VISIBLE
-                            }.addOnSuccessListener {
-                                CentralLog.d(TAG, "uploaded successfully")
-                                var myParentFragment: UploadPageFragment =
-                                    (parentFragment as UploadPageFragment)
-                                myParentFragment.turnOffLoadingProgress()
-                                myParentFragment.navigateToUploadComplete()
-                            }
-                        } catch (e: Throwable) {
-                            CentralLog.d(TAG, "Failed to upload data: ${e.message}")
-                            var myParentFragment: UploadPageFragment =
-                                (parentFragment as UploadPageFragment)
-                            myParentFragment.turnOffLoadingProgress()
-                            enterPinFragmentErrorMessage.visibility = View.VISIBLE
-                        }
-                    }.addOnFailureListener {
-                        CentralLog.d(TAG, "Invalid code")
-                        var myParentFragment: UploadPageFragment =
-                            (parentFragment as UploadPageFragment)
-                        myParentFragment.turnOffLoadingProgress()
-                        enterPinFragmentErrorMessage.visibility = View.VISIBLE
-                    }
                 }
         }
 
@@ -162,19 +119,12 @@ class EnterPinFragment : Fragment() {
         disposeObj?.dispose()
     }
 
-    private fun getUploadToken(uploadCode: String): Task<HttpsCallableResult> {
-        val functions = FirebaseFunctions.getInstance(BuildConfig.FIREBASE_REGION)
-        return functions
-            .getHttpsCallable("getUploadToken")
-            .call(uploadCode)
-    }
-
     private fun writeToInternalStorageAndUpload(
         context: Context,
         deviceDataList: List<StreetPassRecord>,
         statusList: List<StatusRecord>,
         uploadToken: String?
-    ): UploadTask {
+    ) {
         var date = Utils.getDateFromUnix(System.currentTimeMillis())
         var gson = Gson()
 
@@ -216,38 +166,6 @@ class EnterPinFragment : Fragment() {
         fileOutputStream.close()
 
         CentralLog.i(TAG, "File wrote: ${fileToUpload.absolutePath}")
-
-        return uploadToCloudStorage(context, fileToUpload)
-    }
-
-    private fun uploadToCloudStorage(context: Context, fileToUpload: File): UploadTask {
-        CentralLog.d(TAG, "Uploading to Cloud Storage")
-
-        val bucketName = BuildConfig.FIREBASE_UPLOAD_BUCKET
-        val storage = FirebaseStorage.getInstance("gs://${bucketName}")
-        var storageRef = storage.getReferenceFromUrl("gs://${bucketName}")
-
-        val dateString = SimpleDateFormat("YYYYMMdd").format(Date())
-        var streetPassRecordsRef =
-            storageRef.child("streetPassRecords/$dateString/${fileToUpload.name}")
-
-        val fileUri: Uri =
-            FileProvider.getUriForFile(
-                context,
-                "${BuildConfig.APPLICATION_ID}.fileprovider",
-                fileToUpload
-            )
-
-        var uploadTask = streetPassRecordsRef.putFile(fileUri)
-        uploadTask.addOnCompleteListener {
-            try {
-                fileToUpload.delete()
-                CentralLog.i(TAG, "upload file deleted")
-            } catch (e: Exception) {
-                CentralLog.e(TAG, "Failed to delete upload file")
-            }
-        }
-        return uploadTask
     }
 
 }

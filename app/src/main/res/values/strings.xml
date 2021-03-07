@@ -82,11 +82,11 @@
 
     <string name="privacy_safeguards"><u>privacy safeguards</u></string>
 
-    <string name="service_ok_title">OpenTrace is scanning to keep you safe! :)</string>
+    <string name="service_ok_title">SafeBlues is active and collecting research date! :)</string>
     <string name="service_ok_body">Restart phone if this notification disappears</string>
 
     <string name="service_not_ok_title">Oh no! :(</string>
-    <string name="service_not_ok_body">OpenTrace is not scanning.</string>
+    <string name="service_not_ok_body">SafeBlues is not active.</string>
     <string name="service_not_ok_action">Check app now</string>
 
     <string name="share_message">Join me in the SafeBlues experiment! Go to: https://safeblues.org</string>
