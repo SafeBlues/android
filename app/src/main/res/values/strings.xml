@@ -46,8 +46,8 @@
     <string name="title_upload">Upload</string>
     <string name="title_help">Help</string>
 
-    <string name="how_to_help">How you can help virus spread research</string>
-    <string name="help_action">Keep app open, and let it run in the background until the end of the experiment</string>
+    <string name="how_to_help">SafeBlues campus experiment</string>
+    <string name="help_action">Please try to keep the app running in the background while on campus.</string>
 
     <string name="app_permission_status">App Permissions Status</string>
     <string name="bluetooth_on">Bluetooth: On</string>

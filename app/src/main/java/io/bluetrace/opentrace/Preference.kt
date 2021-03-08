@@ -2,6 +2,8 @@ package io.bluetrace.opentrace
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.security.SecureRandom
+
 
 object Preference {
     private const val PREF_ID = "Tracer_pref"
@@ -9,6 +11,8 @@ object Preference {
     private const val PHONE_NUMBER = "PHONE_NUMBER"
     private const val CHECK_POINT = "CHECK_POINT"
     private const val HANDSHAKE_PIN = "HANDSHAKE_PIN"
+
+    private const val PARTICIPANT_ID = "PARTICIPANT_ID"
 
     private const val NEXT_FETCH_TIME = "NEXT_FETCH_TIME"
     private const val EXPIRY_TIME = "EXPIRY_TIME"
@@ -20,6 +24,26 @@ object Preference {
 
 
     private const val EXPERIMENT_PHONE_ID = "EXPERIMENT_PHONE_ID"
+
+    private val rand = SecureRandom()
+
+    private fun getParticipantIdReal(context: Context): String {
+        return context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+            .getString(PARTICIPANT_ID, "ERROR") ?: "ERROR"
+    }
+
+    fun getParticipantId(context: Context): String {
+        if (getParticipantIdReal(context) == "ERROR") {
+            var new_participant_id = ""
+            for (i in 1..10) {
+                new_participant_id += rand.nextInt(10).toString()
+            }
+            context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+                .edit().putString(PARTICIPANT_ID, new_participant_id).apply()
+        }
+
+        return getParticipantIdReal(context)
+    }
 
     fun putHandShakePin(context: Context, value: String) {
         context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)

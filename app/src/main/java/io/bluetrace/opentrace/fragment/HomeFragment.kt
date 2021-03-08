@@ -10,7 +10,6 @@ import android.os.PowerManager
 import android.text.Spannable
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -52,6 +51,8 @@ class HomeFragment : Fragment() {
 
         git_hash.visibility = View.VISIBLE
         git_hash.text = BuildConfig.GITHASH
+
+        participant_id_view.text = Preference.getParticipantId(view.context)
 
         lastKnownScanningStarted = db.statusDao().getMostRecentRecord("Scanning Started")
         lastKnownScanningStarted.observe(viewLifecycleOwner,

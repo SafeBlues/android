@@ -83,6 +83,20 @@
                     android:text="@string/how_to_help" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/appCompatTextView2"
+                    style="@style/OnboardingDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Your participant-id:" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/participant_id_view"
+                    style="@style/ParticipantIdView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LOADING..." />
+
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/OnboardingDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
