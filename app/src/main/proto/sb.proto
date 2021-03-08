@@ -112,7 +112,7 @@ message PhoneStatus {
 }
 
 message ReportStatusRequest {
-    string phone_id = 1;
+    string participant_id = 1;
     repeated PhoneStatus statuses = 2;
 }
 

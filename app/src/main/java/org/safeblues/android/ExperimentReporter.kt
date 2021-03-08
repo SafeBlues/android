@@ -35,7 +35,7 @@ object ExperimentReporter {
             val experimentDao = ExperimentDatabase.getDatabase(context).experimentDao()
 
             val ret = SafeBluesProtos.ReportStatusRequest.newBuilder()
-                .setPhoneId(Preference.getExperimentPhoneId(context))
+                .setParticipantId(Preference.getParticipantId(context))
 
             for (entry in experimentDao.getUnsentExperimentData()) {
                 ret.addStatuses(SafeBluesProtos.PhoneStatus.newBuilder().apply{
