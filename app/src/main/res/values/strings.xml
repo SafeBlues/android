@@ -6,12 +6,12 @@
     <string name="ble_not_supported">This device does not support BLE</string>
 
     <string name="tv_onboarding_title">Safe Blues</string>
-    <string name="tv_onboarding_desc">Help study virus spread by running Safe Blues on your phone.</string>
+    <string name="tv_onboarding_desc">Help the SafeBlues experiment by running the app on your phone.</string>
     <string name="tv_onboarding_desc_sub">Visit https://safeblues.org for more information.</string>
     <string name="i_want_to_help">Get started</string>
 
     <string name="tv_howitworks_title">How Safe Blues works</string>
-    <string name="tv_howitworks_explanation_1">We use Bluetooth signals to simulate the spread of digital viruses between your phone and the phones of other Safe Blues users around you.</string>
+    <string name="tv_howitworks_explanation_1">We use Bluetooth signals to simulate the spread of digital tokens between your phone and the phones of other Safe Blues users around you.</string>
     <string name="tv_howitworks_explanation_2">This data allows us to estimate the spread characteristics of real virus and determine the effectiveness of policy without storing your health information and while reducing your privacy risk.</string>
     <string name="tv_howitworks_explanation_3">The app will communicate with Safe Blues servers daily to sync strand information.</string>
     <string name="tv_howitworks_button">Continue</string>
@@ -32,13 +32,13 @@
     <string name="bluetooth">1. Bluetooth</string>
     <string name="location_permissions">2. Location Permissions</string>
     <string name="battery_optimiser_opt">3. Battery Optimiser</string>
-    <string name="notes">Android needs Location Permissions for Bluetooth to work. We don\'t have access to your physical location.</string>
+    <string name="notes">Android needs Location Permissions for Bluetooth to work. Additionally to give you prizes for experiment participation, we log how many hours you spend on the University of Auckland City Campus each day. No coordinates or exact timestamps are stored or collected as part of the experiment.</string>
     <string name="proceed">Proceed</string>
     <string name="continue_">Continue</string>
     <string name="get_otp">Get OTP</string>
     <string name="wrong_number"><u>Wrong Number?</u></string>
     <string name="app_permission_fully_setup">App permissions are fully set up</string>
-    <string name="app_permission_fully_setup_desc">Please leave all settings on until the outbreak ends.</string>
+    <string name="app_permission_fully_setup_desc">Please leave all settings on until the experiment ends.</string>
 
     <string name="send_otp">We\'ll text you a One-Time Pin (OTP)</string>
 
@@ -56,7 +56,7 @@
     <string name="push_noti">Push Notification: On</string>
     <string name="share_this_app">Share this app</string>
     <string name="ask_friend">Ask friends and family to help</string>
-    <string name="help_us_identify">Help stop the virus spread by allowing all permissions</string>
+    <string name="help_us_identify">Help us collect research data!</string>
     <string name="restart_app_setup">Complete app setup</string>
     <string name="upload_data">Upload Data</string>
     <string name="for_official_use">For use by contact tracers</string>
@@ -68,9 +68,9 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="setup_incomplete">Setup is incomplete!</string>
-    <string name="ack_title">Your consent is needed for the following:</string>
-    <string name="ack_mobile">To store your mobile number in a secured OpenTrace registry</string>
-    <string name="ack_data">This text should never be visible.</string>
+    <string name="ack_title">Your consent is needed to collect and store for the following:</string>
+    <string name="ack_mobile">Anonymised Safe Blues experimental data collected through your phone</string>
+    <string name="ack_data">Data about your participation in the experiment for the purpose of awarding prizes</string>
     <string name="otp">Please enter the OTP sent to your mobile phone via sms</string>
     <string name="keep_push_on">Keep push notifications on too, so we can alert you if the app is not scanning.</string>
     <string name="verification_failed">Verification failed. Please try again</string>
@@ -80,9 +80,9 @@
     <string name="invalid_user">Your account has been disabled. Please contact support.</string>
     <string name="too_many_requests">Too many requests. Please try again later.</string>
 
-    <string name="privacy_safeguards"><u>privacy safeguards</u></string>
+    <string name="privacy_safeguards"><u>participant information sheet</u>.</string>
 
-    <string name="service_ok_title">SafeBlues is active and collecting research date! :)</string>
+    <string name="service_ok_title">SafeBlues is active and collecting research data!</string>
     <string name="service_ok_body">Restart phone if this notification disappears</string>
 
     <string name="service_not_ok_title">Oh no! :(</string>

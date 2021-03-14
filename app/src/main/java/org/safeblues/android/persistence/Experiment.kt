@@ -13,7 +13,10 @@ class ExperimentEntry constructor(
     val enter_time: Long = System.currentTimeMillis(),
 
     @ColumnInfo(name = "exit_time")
-    val exit_time: Long? = null
+    val exit_time: Long? = null,
+
+    @ColumnInfo(name = "count_active")
+    val count_active: Long = 0
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

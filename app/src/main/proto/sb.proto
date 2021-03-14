@@ -109,6 +109,7 @@ service ExperimentAPI {
 message PhoneStatus {
     double duration = 1;
     google.protobuf.Timestamp truncated_entry = 2;
+    int64 count_active = 3;
 }
 
 message ReportStatusRequest {

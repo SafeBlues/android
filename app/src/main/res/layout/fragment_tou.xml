@@ -36,7 +36,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@id/emote_icon"
             app:layout_constraintTop_toTopOf="@id/phone_number"
-            app:srcCompat="@drawable/ic_smartphone" />
+            app:srcCompat="@drawable/grey_check" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/phone_number"
@@ -59,7 +59,7 @@
             android:paddingRight="24dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@id/data_clause"
-            app:srcCompat="@drawable/ic_masked_emote" />
+            app:srcCompat="@drawable/grey_check" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/data_clause"
@@ -77,12 +77,12 @@
             style="@style/OnboardingDescNoPadding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Read our "
-            android:paddingLeft="24dp"
             android:layout_marginBottom="20dp"
+            android:paddingLeft="24dp"
+            android:text="Read the "
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/privacy"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintRight_toLeftOf="@+id/privacy" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/privacy"

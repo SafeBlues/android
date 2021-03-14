@@ -106,7 +106,8 @@
                     android:id="@+id/sync_strands_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sync strands with server" />
+                    android:text="Sync strands with server"
+                    android:visibility="gone" />
 
             </LinearLayout>
 

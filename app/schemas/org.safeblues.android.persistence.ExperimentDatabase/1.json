@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7a25370bf22785e8158f0cd33af10580",
+    "identityHash": "59548a7108ba62e92a1e4abc4a430444",
     "entities": [
       {
         "tableName": "experiment_data",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sent` INTEGER NOT NULL, `enter_time` INTEGER NOT NULL, `exit_time` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sent` INTEGER NOT NULL, `enter_time` INTEGER NOT NULL, `exit_time` INTEGER, `count_active` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -31,6 +31,12 @@
             "columnName": "exit_time",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "count_active",
+            "columnName": "count_active",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -46,7 +52,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7a25370bf22785e8158f0cd33af10580')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '59548a7108ba62e92a1e4abc4a430444')"
     ]
   }
 }

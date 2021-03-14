@@ -110,7 +110,7 @@ object CD {
     suspend fun update(context: Context) {
         // this function
 
-        Log.i(TAG, "Running SafeBlues simulation step!")
+        Log.i(TAG, "Running Safe Blues simulation step!")
 
         val now = System.currentTimeMillis()
 
