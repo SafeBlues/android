@@ -32,7 +32,7 @@
     <string name="bluetooth">1. Bluetooth</string>
     <string name="location_permissions">2. Location Permissions</string>
     <string name="battery_optimiser_opt">3. Battery Optimiser</string>
-    <string name="notes">Android needs Location Permissions for Bluetooth to work. Additionally to give you prizes for experiment participation, we log how many hours you spend on the University of Auckland City Campus each day. No coordinates or exact timestamps are stored or collected as part of the experiment.</string>
+    <string name="notes">Android needs Location Permissions for Bluetooth to work. Additionally to give you prizes for experiment participation, we log how many hours you spend on the University of Auckland City Campus each day. No coordinates or exact timestamps are stored or collected as part of the experiment. Location and Bluetooth are always in use, even when the app is in the background. Bluetooth is used to collect research data, and your location is used to measure time spent on campus for logging campus hours.</string>
     <string name="proceed">Proceed</string>
     <string name="continue_">Continue</string>
     <string name="get_otp">Get OTP</string>

@@ -105,7 +105,7 @@
         <item name="android:layout_marginTop">28dp</item>
         <item name="android:paddingLeft">24dp</item>
         <item name="android:paddingRight">24dp</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">13sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/grey_3</item>
     </style>
