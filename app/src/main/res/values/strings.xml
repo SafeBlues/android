@@ -6,14 +6,14 @@
     <string name="ble_not_supported">This device does not support BLE</string>
 
     <string name="tv_onboarding_title">Safe Blues</string>
-    <string name="tv_onboarding_desc">Help the SafeBlues experiment by running the app on your phone.</string>
+    <string name="tv_onboarding_desc">Help the Safe Blues experiment by running the app on your phone.</string>
     <string name="tv_onboarding_desc_sub">Visit https://safeblues.org for more information.</string>
     <string name="i_want_to_help">Get started</string>
 
     <string name="tv_howitworks_title">How Safe Blues works</string>
-    <string name="tv_howitworks_explanation_1">We use Bluetooth signals to simulate the spread of digital tokens between your phone and the phones of other Safe Blues users around you.</string>
-    <string name="tv_howitworks_explanation_2">This data allows us to estimate the spread characteristics of real virus and determine the effectiveness of policy without storing your health information and while reducing your privacy risk.</string>
-    <string name="tv_howitworks_explanation_3">The app will communicate with Safe Blues servers daily to sync strand information.</string>
+    <string name="tv_howitworks_explanation_1">We use Bluetooth signals to spread digital tokens between your phone and the phones of other Safe Blues users around you. This spread of tokens acts similarly to the spread of real airborne disease.</string>
+    <string name="tv_howitworks_explanation_2">The Safe Blues experiment is a digital simulation and completely isolated. It is not related to your health status, or the health status of others in any way.</string>
+    <string name="tv_howitworks_explanation_3">The app communicates with the Safe Blues server daily to sync anonymized simulation data.</string>
     <string name="tv_howitworks_button">Continue</string>
 
     <string name="mobile_number">Mobile number</string>
@@ -46,7 +46,7 @@
     <string name="title_upload">Upload</string>
     <string name="title_help">Help</string>
 
-    <string name="how_to_help">SafeBlues campus experiment</string>
+    <string name="how_to_help">Safe Blues campus experiment</string>
     <string name="help_action">Please try to keep the app running in the background while on campus.</string>
 
     <string name="app_permission_status">App Permissions Status</string>
@@ -69,7 +69,7 @@
     <string name="cancel">Cancel</string>
     <string name="setup_incomplete">Setup is incomplete!</string>
     <string name="ack_title">Your consent is needed to collect and store for the following:</string>
-    <string name="ack_mobile">Anonymised Safe Blues experimental data collected through your phone</string>
+    <string name="ack_mobile">Anonymized Safe Blues experimental data collected through your phone</string>
     <string name="ack_data">Data about your participation in the experiment for the purpose of awarding prizes</string>
     <string name="otp">Please enter the OTP sent to your mobile phone via sms</string>
     <string name="keep_push_on">Keep push notifications on too, so we can alert you if the app is not scanning.</string>
@@ -82,12 +82,12 @@
 
     <string name="privacy_safeguards"><u>participant information sheet</u>.</string>
 
-    <string name="service_ok_title">SafeBlues is active and collecting research data!</string>
+    <string name="service_ok_title">Safe Blues is active and collecting research data!</string>
     <string name="service_ok_body">Restart phone if this notification disappears</string>
 
     <string name="service_not_ok_title">Oh no! :(</string>
-    <string name="service_not_ok_body">SafeBlues is not active.</string>
+    <string name="service_not_ok_body">Safe Blues is not active.</string>
     <string name="service_not_ok_action">Check app now</string>
 
-    <string name="share_message">Join me in the SafeBlues experiment! Go to: https://safeblues.org</string>
+    <string name="share_message">Join me in the Safe Blues experiment! Go to: https://safeblues.org/experiment/</string>
 </resources>

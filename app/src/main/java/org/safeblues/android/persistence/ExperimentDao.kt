@@ -20,7 +20,7 @@ interface ExperimentDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(record: ExperimentEntry)
 
-    @Query("INSERT INTO experiment_data(enter_time, sent) VALUES (:enter_time, 'false')")
+    @Query("INSERT INTO experiment_data(enter_time, sent, count_active) VALUES (:enter_time, 'false', 0)")
     fun enterGeofence(enter_time: Long)
 
     @Query("UPDATE experiment_data SET count_active = count_active + 1 WHERE exit_time IS NULL AND id = (SELECT id FROM experiment_data ORDER BY enter_time DESC LIMIT 1)")
