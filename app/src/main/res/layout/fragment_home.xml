@@ -109,6 +109,19 @@
                     android:text="Sync strands with server"
                     android:visibility="gone" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/peepeemainscreen"
+                    style="@style/privacypolicy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="52dp"
+                    android:paddingLeft="24dp"
+                    android:text="Click here to read the privacy policy."
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintHorizontal_bias="0.0"
+                    card_view:layout_constraintLeft_toLeftOf="parent"
+                    card_view:layout_constraintRight_toLeftOf="@+id/privacy2" />
+
             </LinearLayout>
 
 

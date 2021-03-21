@@ -88,6 +88,10 @@ class HomeFragment : Fragment() {
             context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://safeblues.org/experiment/participant_info?id=" + participant_id_view.text)))
         }
 
+        peepeemainscreen.setOnClickListener {
+            context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://safeblues.org/privacy-policy/")))
+        }
+
         sync_strands_button.setOnClickListener {
             syncStrands(it)
         }

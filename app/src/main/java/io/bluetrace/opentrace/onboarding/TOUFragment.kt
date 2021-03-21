@@ -11,6 +11,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_tou.*
 import io.bluetrace.opentrace.R
 import io.bluetrace.opentrace.logging.CentralLog
+import kotlinx.android.synthetic.main.fragment_home.*
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -56,11 +57,15 @@ class TOUFragment : OnboardingFragmentInterface() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         privacy.setOnClickListener {
-            CentralLog.d(TAG, "clicked the privacy safeguards")
-            val intent = Intent(mainContext, WebViewActivity::class.java)
-            startActivity(intent)
+            context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://safeblues.org/participant-information-sheet/")))
         }
+
+        privacy2.setOnClickListener {
+            context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://safeblues.org/privacy-policy/")))
+        }
+
     }
 
     override fun onAttach(context: Context) {

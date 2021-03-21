@@ -81,6 +81,7 @@
     <string name="too_many_requests">Too many requests. Please try again later.</string>
 
     <string name="privacy_safeguards"><u>participant information sheet</u>.</string>
+    <string name="privacy_safeguards2"><u>privacy policy</u>.</string>
 
     <string name="service_ok_title">Safe Blues is active and collecting research data!</string>
     <string name="service_ok_body">Restart phone if this notification disappears</string>

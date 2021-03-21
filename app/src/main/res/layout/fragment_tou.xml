@@ -13,6 +13,31 @@
         app:layout_constraintBottom_toTopOf="@id/footer">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/privacy2"
+            style="@style/OnboardingDescNoPadding"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="52dp"
+            android:text="@string/privacy_safeguards2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toRightOf="@+id/readour"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/readour2"
+            style="@style/OnboardingDescNoPadding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="52dp"
+            android:paddingLeft="24dp"
+            android:text="Read the "
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/privacy2" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/header"
             style="@style/OnboardingTitle"
             android:layout_width="wrap_content"
@@ -82,7 +107,7 @@
             android:text="Read the "
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/privacy" />
+            app:layout_constraintRight_toLeftOf="@+id/privacy2" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/privacy"
