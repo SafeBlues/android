@@ -55,7 +55,11 @@ object ExperimentReporter {
 
             val data = ExperimentalDataJson()
             data.participant_id = Preference.getParticipantId(context)
-            for (entry in experimentDao.getUnsentExperimentData()) {
+            val entries = experimentDao.getUnsentExperimentData()
+            if (entries.isEmpty()) {
+                Log.d(TAG, "No data to push to PMS, pushing empty anyway")
+            }
+            for (entry in entries) {
                 val status = ExperimentalDataStatus()
                 status.status_id = entry.id
                 status.duration = (((entry.exit_time ?: 0) - entry.enter_time) / (1000 * 60 * 15))

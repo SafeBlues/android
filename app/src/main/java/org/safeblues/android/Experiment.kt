@@ -25,6 +25,8 @@ class Experiment(appContext: Context, params: WorkerParameters) : Worker(appCont
         try {
             runBlocking {
                 ExperimentReporter.geofencingEtc(applicationContext)
+                // experiment stuff
+                ExperimentReporter.pushExperimentStatus(applicationContext)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Experiment stuff failed: $e")

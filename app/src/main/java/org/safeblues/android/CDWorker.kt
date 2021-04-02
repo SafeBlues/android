@@ -14,8 +14,6 @@ class CDWorker : JobIntentService() {
         runBlocking {
             CD.update(this@CDWorker.applicationContext)
             API.ensureSyncerScheduled(this@CDWorker.applicationContext)
-            // experiment stuff
-            ExperimentReporter.pushExperimentStatus(applicationContext)
         }
     }
 
