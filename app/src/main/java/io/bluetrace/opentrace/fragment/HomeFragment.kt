@@ -85,7 +85,7 @@ class HomeFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         participant_id_view.setOnClickListener {
-            context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://safeblues.org/experiment/participant_info?id=" + participant_id_view.text)))
+            context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://participant.safeblues.org/stats/" + participant_id_view.text)))
         }
 
         peepeemainscreen.setOnClickListener {
