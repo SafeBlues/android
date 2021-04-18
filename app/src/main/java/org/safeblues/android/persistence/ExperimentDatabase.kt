@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = arrayOf(ExperimentEntry::class),
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class ExperimentDatabase : RoomDatabase() {
@@ -22,12 +22,13 @@ abstract class ExperimentDatabase : RoomDatabase() {
             if (tempInstance != null) {
                 return tempInstance
             }
+
             synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context,
                     ExperimentDatabase::class.java,
                     "experiment_database"
-                ).allowMainThreadQueries().build()
+                ).fallbackToDestructiveMigration().allowMainThreadQueries().build()
                 INSTANCE = instance
                 return instance
             }

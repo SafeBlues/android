@@ -87,7 +87,7 @@
                     style="@style/OnboardingDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Your participant-id (click to view stats):" />
+                    android:text="Your participant-id (click to register and view stats):" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/participant_id_view"

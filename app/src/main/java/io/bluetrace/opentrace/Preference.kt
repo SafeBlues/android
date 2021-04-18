@@ -60,9 +60,22 @@ object Preference {
                 new_secret += rand.nextInt(10).toString()
             }
             context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
-                .edit().putString(PARTICIPANT_ID, new_secret).apply()
+                .edit().putString(CLIENT_SECRET, new_secret).apply()
         }
         return getClientSecretReal(context)
+    }
+
+    fun bytesToHex(bytes: ByteArray): String {
+        val hexArray = "0123456789abcdef".toCharArray()
+
+        val hexChars = CharArray(bytes.size * 2)
+        for (j in bytes.indices) {
+            val v = bytes[j].toInt() and 0xFF
+
+            hexChars[j * 2] = hexArray[v ushr 4]
+            hexChars[j * 2 + 1] = hexArray[v and 0x0F]
+        }
+        return "0x" + String(hexChars)
     }
 
     fun getClientId(context: Context): String {
@@ -70,8 +83,8 @@ object Preference {
         val clientSecret = getClientSecret(context)
         val hours = System.currentTimeMillis() / 1000 / 86400
         val digest = MessageDigest.getInstance("SHA-256")
-        val hash = digest.digest((clientSecret + hours.toString()).toByteArray(StandardCharsets.UTF_8)).toString()
-        return hash
+        val hash = digest.digest((clientSecret + hours.toString()).toByteArray(StandardCharsets.UTF_8))
+        return bytesToHex(hash)
     }
 
     fun putHandShakePin(context: Context, value: String) {
