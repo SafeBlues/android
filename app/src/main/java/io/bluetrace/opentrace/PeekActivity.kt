@@ -16,6 +16,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.database_peek.*
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordStorage
 import io.bluetrace.opentrace.streetpass.view.RecordViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.safeblues.android.API
 
 
@@ -26,6 +28,14 @@ class PeekActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         newPeek()
+    }
+
+    private fun syncStrands(view: View) {
+        val api = API
+        GlobalScope.launch { // or whatever
+            api.syncStrandsWithServer(view.context)
+            api.pushStatsToServer(view.context)
+        }
     }
 
     private fun newPeek() {
@@ -65,6 +75,10 @@ class PeekActivity : AppCompatActivity() {
 
         stop.setOnClickListener {
             stopService()
+        }
+
+        push_pull.setOnClickListener {
+            syncStrands(it)
         }
 
         delete.setOnClickListener { view ->

@@ -12,6 +12,7 @@ import org.safeblues.android.persistence.StrandDatabase
 import org.safeblues.api.SafeBluesGrpcKt
 import org.safeblues.api.SafeBluesProtos
 import com.google.protobuf.util.Timestamps.toMillis
+import io.bluetrace.opentrace.Preference
 import kotlinx.coroutines.runBlocking
 import org.safeblues.android.persistence.TempID
 import org.safeblues.android.persistence.TempIDDatabase
@@ -37,10 +38,10 @@ object API {
     fun ensureSyncerScheduled(context: Context) {
         Log.i(TAG, "Ensuring syncer is alive")
         // Runs every 24 hours in the last hour
-        val repeatingRequest = PeriodicWorkRequestBuilder<Syncer>(24,
-            TimeUnit.HOURS,
-            1,
-            TimeUnit.HOURS
+        val repeatingRequest = PeriodicWorkRequestBuilder<Syncer>(15,
+            TimeUnit.MINUTES,
+            5,
+            TimeUnit.MINUTES
         ).build()
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
@@ -109,9 +110,11 @@ object API {
 
     suspend fun pushStatsToServer(context: Context): Boolean {
         try {
+            Log.d(TAG, "Pushing strands to server...")
             val stub = getStub()
             val strandDao = StrandDatabase.getDatabase(context).strandDao()
             val ret = SafeBluesProtos.InfectionReport.newBuilder()
+            ret.clientId = Preference.getClientId(context)
 
             val now = System.currentTimeMillis()
 
@@ -130,6 +133,7 @@ object API {
             val report = ret.build()
 
             stub.report(report)
+            Log.d(TAG, "...pushed strands to server")
             return true
         } catch (e: Exception) {
             Log.e(TAG, "Failed to sync: " + e.toString())

@@ -84,7 +84,7 @@ object CD {
                 "Tried to infect with strand already infected, strand_id: " + strand_id.toString()
             )
         } else {
-            Log.w(TAG, "Seeding without seeding! TODO")
+            Log.w(TAG, "Infecting with strand " + strand_id.toString())
             val incubation_end = now + Math.round(simulateIncubationPeriod(strand) * 1000)
             val infection_end = incubation_end + Math.round(simulateInfectiousPeriod(strand) * 1000)
             strandDb.infectStrand(strand_id, incubation_end, infection_end)

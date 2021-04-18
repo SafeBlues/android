@@ -2,6 +2,8 @@ package io.bluetrace.opentrace
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 import java.security.SecureRandom
 
 
@@ -13,6 +15,7 @@ object Preference {
     private const val HANDSHAKE_PIN = "HANDSHAKE_PIN"
 
     private const val PARTICIPANT_ID = "PARTICIPANT_ID"
+    private const val CLIENT_SECRET = "CLIENT_SECRET"
 
     private const val NEXT_FETCH_TIME = "NEXT_FETCH_TIME"
     private const val EXPIRY_TIME = "EXPIRY_TIME"
@@ -29,6 +32,11 @@ object Preference {
             .getString(PARTICIPANT_ID, "ERROR") ?: "ERROR"
     }
 
+    private fun getClientSecretReal(context: Context): String {
+        return context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+            .getString(CLIENT_SECRET, "ERROR") ?: "ERROR"
+    }
+
     fun getParticipantId(context: Context): String {
         if (getParticipantIdReal(context) == "ERROR") {
             var new_participant_id = ""
@@ -40,6 +48,30 @@ object Preference {
         }
 
         return getParticipantIdReal(context)
+    }
+
+    fun getClientSecret(context: Context): String {
+        // retrieves or generate client secret if it doesn't yet exist
+        // client secret is a 10^70=~232 bits cryptographically random string
+        if (getClientSecretReal(context) == "ERROR") {
+            var new_secret = ""
+            // cryptographically secure 70 digit base 10 string... over 256 bit...
+            for (i in 1..70) {
+                new_secret += rand.nextInt(10).toString()
+            }
+            context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+                .edit().putString(PARTICIPANT_ID, new_secret).apply()
+        }
+        return getClientSecretReal(context)
+    }
+
+    fun getClientId(context: Context): String {
+        // mixes client secret with current day through a SHA256 crypto random hash to get a day-persistent client id
+        val clientSecret = getClientSecret(context)
+        val hours = System.currentTimeMillis() / 1000 / 86400
+        val digest = MessageDigest.getInstance("SHA-256")
+        val hash = digest.digest((clientSecret + hours.toString()).toByteArray(StandardCharsets.UTF_8)).toString()
+        return hash
     }
 
     fun putHandShakePin(context: Context, value: String) {
