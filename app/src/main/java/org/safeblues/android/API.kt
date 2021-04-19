@@ -3,6 +3,7 @@ package org.safeblues.android
 import android.content.Context
 import android.util.Base64
 import android.util.Log
+import androidx.room.ColumnInfo
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -12,6 +13,7 @@ import org.safeblues.android.persistence.StrandDatabase
 import org.safeblues.api.SafeBluesGrpcKt
 import org.safeblues.api.SafeBluesProtos
 import com.google.protobuf.util.Timestamps.toMillis
+import io.bluetrace.opentrace.BuildConfig
 import io.bluetrace.opentrace.Preference
 import kotlinx.coroutines.runBlocking
 import org.safeblues.android.persistence.TempID
@@ -85,10 +87,10 @@ object API {
                         infection_probability_map_p = strand.infectionProbabilityMapP,
                         infection_probability_map_k = strand.infectionProbabilityMapK,
                         infection_probability_map_l = strand.infectionProbabilityMapL,
-                        incubation_period_hours_alpha = strand.incubationPeriodHoursAlpha,
-                        incubation_period_hours_beta = strand.incubationPeriodHoursBeta,
-                        infectious_period_hours_alpha = strand.infectiousPeriodHoursAlpha,
-                        infectious_period_hours_beta = strand.infectiousPeriodHoursBeta
+                        incubation_period_mean_sec = strand.incubationPeriodHoursAlpha,
+                        incubation_period_shape = strand.incubationPeriodHoursBeta,
+                        infectious_period_mean_sec = strand.infectiousPeriodHoursAlpha,
+                        infectious_period_shape = strand.infectiousPeriodHoursBeta
                     )
                 )
             }
@@ -113,6 +115,17 @@ object API {
             Log.d(TAG, "Pushing strands to server...")
             val stub = getStub()
             val strandDao = StrandDatabase.getDatabase(context).strandDao()
+
+            for (strand in strandDao.getStrands()) {
+                Log.d(
+                    TAG, "Strand: " + strand.strand_id +
+                            ": seeding_simulated: " + strand.seeding_simulated.toString() +
+                            ", been_infected: " + strand.been_infected.toString() +
+                            ", my_incubating_end_time: " + strand.my_incubating_end_time.toString() +
+                            ", my_infected_end_time: " + strand.my_infected_end_time.toString()
+                )
+            }
+
             val ret = SafeBluesProtos.InfectionReport.newBuilder()
             ret.clientId = Preference.getClientId(context)
 

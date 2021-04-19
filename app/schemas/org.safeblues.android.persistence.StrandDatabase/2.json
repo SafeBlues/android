@@ -1,0 +1,124 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "cec78203b66f8e8a8d7f656f3fe123b0",
+    "entities": [
+      {
+        "tableName": "strands",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`timestamp` INTEGER NOT NULL, `seeding_simulated` INTEGER NOT NULL, `been_infected` INTEGER NOT NULL, `my_incubating_end_time` INTEGER, `my_infected_end_time` INTEGER, `strand_id` INTEGER NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER NOT NULL, `seeding_probability` REAL NOT NULL, `infection_probability_map_p` REAL NOT NULL, `infection_probability_map_k` REAL NOT NULL, `infection_probability_map_l` REAL NOT NULL, `incubation_period_mean_sec` REAL NOT NULL, `incubation_period_shape` REAL NOT NULL, `infectious_period_mean_sec` REAL NOT NULL, `infectious_period_shape` REAL NOT NULL, PRIMARY KEY(`strand_id`))",
+        "fields": [
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "seeding_simulated",
+            "columnName": "seeding_simulated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "been_infected",
+            "columnName": "been_infected",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "my_incubating_end_time",
+            "columnName": "my_incubating_end_time",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "my_infected_end_time",
+            "columnName": "my_infected_end_time",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "strand_id",
+            "columnName": "strand_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start_time",
+            "columnName": "start_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "end_time",
+            "columnName": "end_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "seeding_probability",
+            "columnName": "seeding_probability",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infection_probability_map_p",
+            "columnName": "infection_probability_map_p",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infection_probability_map_k",
+            "columnName": "infection_probability_map_k",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infection_probability_map_l",
+            "columnName": "infection_probability_map_l",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "incubation_period_mean_sec",
+            "columnName": "incubation_period_mean_sec",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "incubation_period_shape",
+            "columnName": "incubation_period_shape",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infectious_period_mean_sec",
+            "columnName": "infectious_period_mean_sec",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infectious_period_shape",
+            "columnName": "infectious_period_shape",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "strand_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cec78203b66f8e8a8d7f656f3fe123b0')"
+    ]
+  }
+}

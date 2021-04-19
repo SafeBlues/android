@@ -8,7 +8,6 @@ import org.safeblues.android.persistence.StrandDatabase
 import org.safeblues.api.SafeBluesProtos
 import umontreal.ssj.probdist.GammaDist
 import umontreal.ssj.randvar.GammaAcceptanceRejectionGen
-import umontreal.ssj.randvar.RandomVariateGen
 import umontreal.ssj.rng.LFSR113
 import umontreal.ssj.rng.RandomStream
 import java.security.SecureRandom
@@ -47,18 +46,18 @@ object CD {
         return stream.nextDouble()
     }
 
-    private fun gamma(alpha: Double, beta: Double): Double {
-        // this is not particularly efficient to create a new generator object each time, but we
-        // call it so rarely it makes practically no difference
-        return GammaAcceptanceRejectionGen(stream, GammaDist(alpha, beta)).nextDouble()
+    private fun gamma(mean: Double, shape: Double): Double {
+        val lambda = shape / mean
+        val alpha = shape
+        return GammaAcceptanceRejectionGen(stream, GammaDist(alpha, lambda)).nextDouble()
     }
 
     private fun simulateIncubationPeriod(strand: Strand): Double /* s */ {
-        return gamma(strand.incubation_period_hours_alpha, strand.incubation_period_hours_beta)
+        return gamma(strand.incubation_period_mean_sec, strand.incubation_period_shape)
     }
 
     private fun simulateInfectiousPeriod(strand: Strand): Double /* s */ {
-        return gamma(strand.infectious_period_hours_alpha, strand.infectious_period_hours_beta)
+        return gamma(strand.infectious_period_mean_sec, strand.infectious_period_shape)
     }
 
     private fun computeInfectionProbability(

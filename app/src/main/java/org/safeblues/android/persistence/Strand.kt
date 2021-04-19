@@ -28,17 +28,17 @@ class Strand constructor(
     @ColumnInfo(name = "infection_probability_map_l")
     val infection_probability_map_l: Double,
 
-    @ColumnInfo(name = "incubation_period_hours_alpha")
-    val incubation_period_hours_alpha: Double,
+    @ColumnInfo(name = "incubation_period_mean_sec")
+    val incubation_period_mean_sec: Double,
 
-    @ColumnInfo(name = "incubation_period_hours_beta")
-    val incubation_period_hours_beta: Double,
+    @ColumnInfo(name = "incubation_period_shape")
+    val incubation_period_shape: Double,
 
-    @ColumnInfo(name = "infectious_period_hours_alpha")
-    val infectious_period_hours_alpha: Double,
+    @ColumnInfo(name = "infectious_period_mean_sec")
+    val infectious_period_mean_sec: Double,
 
-    @ColumnInfo(name = "infectious_period_hours_beta")
-    val infectious_period_hours_beta: Double
+    @ColumnInfo(name = "infectious_period_shape")
+    val infectious_period_shape: Double
 ) {
     @ColumnInfo(name = "timestamp")
     var timestamp: Long = System.currentTimeMillis()

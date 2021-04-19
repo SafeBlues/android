@@ -8,7 +8,7 @@ import org.safeblues.android.persistence.StrandDao
 
 @Database(
     entities = arrayOf(Strand::class),
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class StrandDatabase : RoomDatabase() {
@@ -28,7 +28,7 @@ abstract class StrandDatabase : RoomDatabase() {
                     context,
                     StrandDatabase::class.java,
                     "strand_database"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 return instance
             }
