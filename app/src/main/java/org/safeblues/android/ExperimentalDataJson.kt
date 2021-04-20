@@ -10,5 +10,6 @@ class ExperimentalDataStatus {
 
 class ExperimentalDataJson {
     var participant_id: String = ""
+    var version_code: Int = 0
     var statuses: MutableList<ExperimentalDataStatus> = ArrayList()
 }

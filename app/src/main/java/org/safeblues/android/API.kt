@@ -128,6 +128,7 @@ object API {
 
             val ret = SafeBluesProtos.InfectionReport.newBuilder()
             ret.clientId = Preference.getClientId(context)
+            ret.versionCode = BuildConfig.VERSION_CODE
 
             val now = System.currentTimeMillis()
 

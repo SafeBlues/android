@@ -83,7 +83,7 @@ object CD {
                 "Tried to infect with strand already infected, strand_id: " + strand_id.toString()
             )
         } else {
-            Log.w(TAG, "Infecting with strand " + strand_id.toString())
+            Log.d(TAG, "Infecting with strand " + strand_id.toString())
             val incubation_end = now + Math.round(simulateIncubationPeriod(strand) * 1000)
             val infection_end = incubation_end + Math.round(simulateInfectiousPeriod(strand) * 1000)
             strandDb.infectStrand(strand_id, incubation_end, infection_end)
@@ -101,7 +101,16 @@ object CD {
         val strandDb = StrandDatabase.getDatabase(context).strandDao()
 
         for (strand in strandDb.getUninitialisedStrands()) {
-            infectWithProb(context, strand.strand_id, strand.seeding_probability)
+            val now = System.currentTimeMillis()
+            // start_time is really the seeding time: if we miss it
+            // (i.e., we learn about a strand after its seeding time), then we don't simualted seeding
+            if (strand.start_time > now && uniform() < strand.seeding_probability) {
+                Log.d(TAG, "Infecting (seed) with strand " + strand.strand_id.toString())
+                val incubation_end = strand.start_time + Math.round(simulateIncubationPeriod(strand) * 1000)
+                val infection_end = incubation_end + Math.round(simulateInfectiousPeriod(strand) * 1000)
+                strandDb.infectStrand(strand.strand_id, incubation_end, infection_end)
+            }
+
             strandDb.markStrandInitialised(strand.strand_id)
         }
     }

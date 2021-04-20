@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
+import io.bluetrace.opentrace.BuildConfig
 import io.bluetrace.opentrace.Preference
 import io.bluetrace.opentrace.Utils
 import kotlinx.coroutines.Dispatchers
@@ -55,6 +56,7 @@ object ExperimentReporter {
 
             val data = ExperimentalDataJson()
             data.participant_id = Preference.getParticipantId(context)
+            data.version_code = BuildConfig.VERSION_CODE
             val entries = experimentDao.getUnsentExperimentData()
             if (entries.isEmpty()) {
                 Log.d(TAG, "No data to push to PMS, pushing empty anyway")

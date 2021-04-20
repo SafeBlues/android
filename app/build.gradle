@@ -40,8 +40,8 @@ android {
         resValue "string", "build_config_package", "org.safeblues.mobile"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 51
-        versionName "2.0.51"
+        versionCode 52
+        versionName "2.0.52"
         buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
