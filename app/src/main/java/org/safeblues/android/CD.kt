@@ -2,6 +2,7 @@ package org.safeblues.android
 
 import android.content.Context
 import android.util.Log
+import io.bluetrace.opentrace.Preference
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordDatabase
 import org.safeblues.android.persistence.Strand
 import org.safeblues.android.persistence.StrandDatabase
@@ -104,7 +105,7 @@ object CD {
             val now = System.currentTimeMillis()
             // start_time is really the seeding time: if we miss it
             // (i.e., we learn about a strand after its seeding time), then we don't simualted seeding
-            if (strand.start_time > now && uniform() < strand.seeding_probability) {
+            if (Preference.getSeedAll(context) || (strand.start_time > now && uniform() < strand.seeding_probability)) {
                 Log.d(TAG, "Infecting (seed) with strand " + strand.strand_id.toString())
                 val incubation_end = strand.start_time + Math.round(simulateIncubationPeriod(strand) * 1000)
                 val infection_end = incubation_end + Math.round(simulateInfectiousPeriod(strand) * 1000)

@@ -81,6 +81,28 @@ class PeekActivity : AppCompatActivity() {
             syncStrands(it)
         }
 
+        val seed_all = Preference.getSeedAll(this)
+
+        if (seed_all) {
+            seed_all_on.visibility = View.VISIBLE
+            seed_all_off.visibility = View.GONE
+        } else {
+            seed_all_on.visibility = View.GONE
+            seed_all_off.visibility = View.VISIBLE
+        }
+
+        seed_all_on.setOnClickListener{
+            Preference.putSeedAll(it.context, false)
+            seed_all_on.visibility = View.GONE
+            seed_all_off.visibility = View.VISIBLE
+        }
+
+        seed_all_off.setOnClickListener{
+            Preference.putSeedAll(it.context, true)
+            seed_all_on.visibility = View.VISIBLE
+            seed_all_off.visibility = View.GONE
+        }
+
         delete.setOnClickListener { view ->
             view.isEnabled = false
 

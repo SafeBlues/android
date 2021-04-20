@@ -17,6 +17,8 @@ object Preference {
     private const val PARTICIPANT_ID = "PARTICIPANT_ID"
     private const val CLIENT_SECRET = "CLIENT_SECRET"
 
+    private const val SEED_ALL = "SEED_ALL"
+
     private const val NEXT_FETCH_TIME = "NEXT_FETCH_TIME"
     private const val EXPIRY_TIME = "EXPIRY_TIME"
     private const val LAST_FETCH_TIME = "LAST_FETCH_TIME"
@@ -48,6 +50,15 @@ object Preference {
         }
 
         return getParticipantIdReal(context)
+    }
+
+    fun getSeedAll(context: Context): Boolean {
+        return context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE).getBoolean(SEED_ALL, false)
+    }
+
+    fun putSeedAll(context: Context, value: Boolean) {
+        context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+            .edit().putBoolean(SEED_ALL, value).apply()
     }
 
     fun getClientSecret(context: Context): String {
