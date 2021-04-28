@@ -13,6 +13,8 @@ import umontreal.ssj.rng.LFSR113
 import umontreal.ssj.rng.RandomStream
 import java.security.SecureRandom
 import kotlin.math.exp
+import kotlin.math.min
+import kotlin.math.sqrt
 
 
 /*
@@ -66,7 +68,11 @@ object CD {
         duration: Double /* s */,
         distance: Double /* m */
     ): Double {
-        return strand.infection_probability_map_p * (1-Math.pow(duration, -strand.infection_probability_map_k)) * Math.pow(distance, -strand.infection_probability_map_l)
+        // assume duration < 30 min (1800 s)   --- And this is SET via the mechanism elsewhere
+        val strength = strand.infection_probability_map_p
+        val radius = strand.infection_probability_map_k
+        val duration_min = duration/60
+        return 1 - exp(-strength * duration_min * (1 - min(radius, distance) / radius))
     }
 
     private fun infect(context: Context, strand_id: Long) {
@@ -121,20 +127,23 @@ object CD {
 
         Log.i(TAG, "Running Safe Blues simulation step!")
 
-        val now = System.currentTimeMillis()
-
         val db = StreetPassRecordDatabase.getDatabase(context).recordDao()
 
-        // get devices that haven't been processed and were last seen longer than PROCESS_DELAY ago
-        var records_needing_processing = db.getNeedingProcessing(now - PROCESS_DELAY_MS)
+        // get devices that haven't been processed and which have unprocessed records older than 30 min
+        val now = System.currentTimeMillis()
+        val before_time = now - 30*60*1000
+        var temp_ids = db.getTempIdsNeedingProcessing(before_time)
 
-        if (records_needing_processing.size >= 1) {
+        if (temp_ids.size >= 1) {
             val strandDb = StrandDatabase.getDatabase(context).strandDao()
 
-            Log.i(TAG, "Processing " + records_needing_processing.size.toString() + " records")
+            Log.i(TAG, "Processing " + temp_ids.size.toString() + " records")
 
-            for (record in records_needing_processing) {
-                Log.i(TAG, "Processing tempId: " + record.tempId)
+            for (record in temp_ids) {
+                val tempId = record.tempId
+                // todo get last share list instead of first one?
+                val shareList = record.shareList
+                Log.i(TAG, "Processing tempId: " + tempId)
 
                 // TODO(aapeli): walk through all records from that tempID and compute time + median distance/etc
                 // TODO(aapeli): run a check first to see if there's any strands that need an update
@@ -142,7 +151,7 @@ object CD {
                 var first_seen = Long.MAX_VALUE
                 var last_seen = Long.MIN_VALUE
 
-                val all_records = db.getAllRecordsForTempId(record.tempId)
+                val all_records = db.getAllRecordsForTempId(tempId)
 
                 assert(all_records.size > 0)
 
@@ -185,24 +194,24 @@ object CD {
                     "Computed duration of encounter: " + time.toString() + " s, distance: " + dist + " m"
                 )
 
-                val strand_ids = SafeBluesProtos.ShareList.parseFrom(record.shareList).strandsList
+                val strand_ids = SafeBluesProtos.ShareList.parseFrom(shareList).strandsList
                 Log.i(TAG, "Strands: " + strand_ids.toString())
 
                 for (strand_id in strand_ids) {
                     val strand = strandDb.getStrand(strand_id)
                     if (strand == null) {
-                        Log.w(TAG, record.tempId + " advertised unknown strand, id: " + strand_id)
+                        Log.w(TAG, tempId + " advertised unknown strand, id: " + strand_id)
                     } else if (strand.start_time > now || strand.end_time < now) {
-                        Log.w(TAG, record.tempId + " advertised inactive strand, id: " + strand_id)
+                        Log.w(TAG, tempId + " advertised inactive strand, id: " + strand_id)
                     } else if (!strand.seeding_simulated) {
                         Log.w(
                             TAG,
-                            record.tempId + " advertised strand we haven't initialised yet, id: " + strand_id
+                            tempId + " advertised strand we haven't initialised yet, id: " + strand_id
                         )
                     } else if (strand.been_infected) {
                         Log.i(
                             TAG,
-                            record.tempId + " advertised strand we are already infected with: " + strand_id
+                            tempId + " advertised strand we are already infected with: " + strand_id
                         )
                     } else {
                         Log.i(TAG, "Got strand: " + strand_id)
@@ -216,18 +225,18 @@ object CD {
                     }
                 }
 
-                db.markTempIdProcessed(records_needing_processing[0].tempId)
+                db.markTempIdProcessed(tempId)
             }
         } else {
             Log.i(TAG, "No records to process")
         }
 
         // Double check
-        records_needing_processing = db.getNeedingProcessing(now - PROCESS_DELAY_MS)
-        if (records_needing_processing.size != 0) {
+        temp_ids = db.getTempIdsNeedingProcessing(before_time)
+        if (temp_ids.size != 0) {
             Log.e(
                 TAG,
-                "Still need to process " + records_needing_processing.size.toString() + " records after processing???"
+                "Still need to process " + temp_ids.size.toString() + " records after processing???"
             )
         }
     }
