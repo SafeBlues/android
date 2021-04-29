@@ -83,11 +83,19 @@
                     android:text="@string/how_to_help" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/appCompatTextView2"
+                    android:id="@+id/version_warning"
+                    style="@style/realUglee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="There is a new version of Safe Blues, you have an outdated version. Please update through the Play store to continue participating in the experiment and accruing campus hours."
+                    android:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/appCompatTextView"
                     style="@style/OnboardingDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Your participant-id (click to register and view stats):" />
+                    android:text="Your participant-id (click to register or view stats):" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/participant_id_view"

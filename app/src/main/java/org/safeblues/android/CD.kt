@@ -69,9 +69,12 @@ object CD {
         distance: Double /* m */
     ): Double {
         // assume duration < 30 min (1800 s)   --- And this is SET via the mechanism elsewhere
-        val strength = strand.infection_probability_map_p
-        val radius = strand.infection_probability_map_k
-        val duration_min = duration/60
+        val strength = strand.infection_probability_map_k
+        val radius = strand.infection_probability_map_l
+        if (duration > 60 * 30) {
+            Log.w(TAG, "Duration > 30 min encountered: $duration")
+        }
+        val duration_min = min(duration/60, 30.0)
         return 1 - exp(-strength * duration_min * (1 - min(radius, distance) / radius))
     }
 

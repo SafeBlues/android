@@ -26,6 +26,8 @@ object ExperimentReporter {
         val perms = Utils.getRequiredPermissions()
         val hasLocationPerms = EasyPermissions.hasPermissions(context, *perms)
 
+        val isLatestVersion = Preference.hasLatestVersion(context)
+
         var btOn = false
         val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
             val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -35,7 +37,7 @@ object ExperimentReporter {
         bluetoothAdapter?.let {
             btOn = it.isEnabled
         }
-        return btOn && hasLocationPerms
+        return isLatestVersion && btOn && hasLocationPerms
     }
 
     fun geofencingEtc(context: Context) {

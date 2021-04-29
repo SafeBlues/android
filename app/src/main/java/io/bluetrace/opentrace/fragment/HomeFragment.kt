@@ -53,6 +53,8 @@ class HomeFragment : Fragment() {
         git_hash.visibility = View.VISIBLE
         git_hash.text = BuildConfig.GITHASH
 
+        version_warning.visibility = if (Preference.hasLatestVersion(view.context)) View.GONE else View.VISIBLE
+
         participant_id_view.text = Preference.getParticipantId(view.context)
 
         lastKnownScanningStarted = db.statusDao().getMostRecentRecord("Scanning Started")

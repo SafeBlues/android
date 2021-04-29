@@ -17,6 +17,8 @@ object Preference {
     private const val PARTICIPANT_ID = "PARTICIPANT_ID"
     private const val CLIENT_SECRET = "CLIENT_SECRET"
 
+    private const val LATEST_VERSION = "LATEST_VERSION"
+
     private const val SEED_ALL = "SEED_ALL"
 
     private const val NEXT_FETCH_TIME = "NEXT_FETCH_TIME"
@@ -32,6 +34,16 @@ object Preference {
     private fun getParticipantIdReal(context: Context): String {
         return context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
             .getString(PARTICIPANT_ID, "ERROR") ?: "ERROR"
+    }
+
+    fun hasLatestVersion(context: Context): Boolean {
+        return context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+            .getInt(LATEST_VERSION, 0) <= BuildConfig.VERSION_CODE
+    }
+
+    fun putLatestVersion(context: Context, value: Int) {
+        context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+            .edit().putInt(LATEST_VERSION, value).apply()
     }
 
     private fun getClientSecretReal(context: Context): String {

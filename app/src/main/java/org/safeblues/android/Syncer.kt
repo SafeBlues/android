@@ -17,6 +17,7 @@ class Syncer(appContext: Context, params: WorkerParameters) : Worker(appContext,
         Log.i(TAG, "Doing work on Syncer")
         try {
             runBlocking {
+                CDWorker.enqueueUpdate(applicationContext)
                 API.pushStatsToServer(applicationContext)
                 API.syncStrandsWithServer(applicationContext)
             }

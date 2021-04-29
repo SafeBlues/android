@@ -25,6 +25,7 @@ message Ping {
 }
 
 message Strand {
+    string name = 13;
     int64 strand_id = 1;
     google.protobuf.Timestamp start_time = 2;
     google.protobuf.Timestamp end_time = 3;
@@ -39,6 +40,8 @@ message Strand {
     // alpha and beta of the gamma distribution for infectious period
     double infectious_period_hours_alpha = 10;
     double infectious_period_hours_beta = 11;
+
+    uint32 minimum_app_version = 12;
 }
 
 message InfectionReport {
@@ -52,6 +55,8 @@ message InfectionReport {
 
 message StrandUpdate {
     repeated Strand strands = 1;
+    // informs the app if there's a new version
+    uint32 latest_app_version = 2;
 }
 
 // These are shipped around internally as intents

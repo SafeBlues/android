@@ -87,7 +87,7 @@
     <string name="service_ok_body">Restart phone if this notification disappears</string>
 
     <string name="service_not_ok_title">Oh no! :(</string>
-    <string name="service_not_ok_body">Safe Blues is not active.</string>
+    <string name="service_not_ok_body">Safe Blues is not active. Please update through the Play store and make sure all required permissions are enabled.</string>
     <string name="service_not_ok_action">Check app now</string>
 
     <string name="share_message">Join me in the Safe Blues experiment! Go to: https://safeblues.org/experiment/</string>

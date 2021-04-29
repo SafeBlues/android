@@ -73,26 +73,33 @@ object API {
             val stub = getStub()
 
             val res = stub.pull(SafeBluesProtos.Empty.getDefaultInstance())
+
+            Preference.putLatestVersion(context, res.latestAppVersion)
+
             Log.i(TAG, "Got strands from server: " + res.toString())
 
             val strandDao = StrandDatabase.getDatabase(context).strandDao()
             for (strand in res.strandsList) {
-                Log.i(TAG, "Strand: " + strand.toString())
-                strandDao.insert(
-                    Strand(
-                        strand_id = strand.strandId,
-                        start_time = toMillis(strand.startTime),
-                        end_time = toMillis(strand.endTime),
-                        seeding_probability = strand.seedingProbability,
-                        infection_probability_map_p = strand.infectionProbabilityMapP,
-                        infection_probability_map_k = strand.infectionProbabilityMapK,
-                        infection_probability_map_l = strand.infectionProbabilityMapL,
-                        incubation_period_mean_sec = strand.incubationPeriodHoursAlpha,
-                        incubation_period_shape = strand.incubationPeriodHoursBeta,
-                        infectious_period_mean_sec = strand.infectiousPeriodHoursAlpha,
-                        infectious_period_shape = strand.infectiousPeriodHoursBeta
+                if (strand.minimumAppVersion <= BuildConfig.VERSION_CODE) {
+                    Log.i(TAG, "Strand: $strand")
+                    strandDao.insert(
+                        Strand(
+                            strand_id = strand.strandId,
+                            start_time = toMillis(strand.startTime),
+                            end_time = toMillis(strand.endTime),
+                            seeding_probability = strand.seedingProbability,
+                            infection_probability_map_p = strand.infectionProbabilityMapP,
+                            infection_probability_map_k = strand.infectionProbabilityMapK,
+                            infection_probability_map_l = strand.infectionProbabilityMapL,
+                            incubation_period_mean_sec = strand.incubationPeriodHoursAlpha,
+                            incubation_period_shape = strand.incubationPeriodHoursBeta,
+                            infectious_period_mean_sec = strand.infectiousPeriodHoursAlpha,
+                            infectious_period_shape = strand.infectiousPeriodHoursBeta
+                        )
                     )
-                )
+                } else {
+                    Log.d(TAG, "Ignoring app with higher minimum version than us")
+                }
             }
 
             CD.seedStrands(context)
