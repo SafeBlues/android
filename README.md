@@ -1,4 +1,6 @@
-# OpenTrace Android app
+# Safe Blues on top of OpenTrace Android app
+
+This README is still for OpenTrace, it needs to be updated.
 
 ![alt text](./OpenTrace.png "OpenTrace Logo")
 
