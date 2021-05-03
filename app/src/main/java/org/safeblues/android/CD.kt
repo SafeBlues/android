@@ -10,11 +10,9 @@ import org.safeblues.api.SafeBluesProtos
 import umontreal.ssj.probdist.GammaDist
 import umontreal.ssj.randvar.GammaAcceptanceRejectionGen
 import umontreal.ssj.rng.LFSR113
-import umontreal.ssj.rng.RandomStream
 import java.security.SecureRandom
 import kotlin.math.exp
 import kotlin.math.min
-import kotlin.math.sqrt
 
 
 /*
@@ -36,8 +34,23 @@ Because tempIds are supposed to be changing constantly, there shouldn't be new r
 object CD {
     private val TAG = "SB_CD"
 
-    private val rand = SecureRandom()
-    val stream: RandomStream = LFSR113()
+    var seed_set = false
+    val stream: LFSR113 = LFSR113()
+
+    private fun seedMaybe() {
+        if (!seed_set) {
+            val rand = SecureRandom()
+            stream.setSeed(
+                intArrayOf(
+                    rand.nextInt(),
+                    rand.nextInt(),
+                    rand.nextInt(),
+                    rand.nextInt()
+                )
+            )
+            seed_set = true
+        }
+    }
 
     // after we stop seeing a device, how long to wait before assuming it's gone?
     // a too large value will stop the disease from spreading correctly
@@ -45,14 +58,31 @@ object CD {
     private final val PROCESS_DELAY_MS = 10*1000 // TODO(aapeli): make 15 min, not 30 sec
 
     private fun uniform(): Double {
+        seedMaybe()
         // gets a U[0,1] random double
         return stream.nextDouble()
     }
 
     private fun gamma(mean: Double, shape: Double): Double {
+        seedMaybe()
         val lambda = shape / mean
         val alpha = shape
         return GammaAcceptanceRejectionGen(stream, GammaDist(alpha, lambda)).nextDouble()
+    }
+
+    fun testSeeeding() {
+        Log.i(TAG, "u1: " + uniform().toString())
+        Log.i(TAG, "u2: " + uniform().toString())
+        Log.i(TAG, "u3: " + uniform().toString())
+        Log.i(TAG, "u4: " + uniform().toString())
+        Log.i(TAG, "u5: " + uniform().toString())
+
+        Log.i(TAG, "g1: " + gamma(1.0, 2.0).toString())
+        Log.i(TAG, "g2: " + gamma(1.0, 2.0).toString())
+        Log.i(TAG, "g3: " + gamma(1.0, 2.0).toString())
+        Log.i(TAG, "g4: " + gamma(1.0, 2.0).toString())
+        Log.i(TAG, "g5: " + gamma(1.0, 2.0).toString())
+
     }
 
     private fun simulateIncubationPeriod(strand: Strand): Double /* s */ {
