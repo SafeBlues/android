@@ -8,16 +8,13 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import io.grpc.ManagedChannelBuilder
-import org.safeblues.android.persistence.Strand
-import org.safeblues.android.persistence.StrandDatabase
 import org.safeblues.api.SafeBluesGrpcKt
 import org.safeblues.api.SafeBluesProtos
 import com.google.protobuf.util.Timestamps.toMillis
 import io.bluetrace.opentrace.BuildConfig
 import io.bluetrace.opentrace.Preference
 import kotlinx.coroutines.runBlocking
-import org.safeblues.android.persistence.TempID
-import org.safeblues.android.persistence.TempIDDatabase
+import org.safeblues.android.persistence.*
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -103,6 +100,16 @@ object API {
             }
 
             CD.seedStrands(context)
+
+            val sdDao = SocialDistancingDatabase.getDatabase(context).sdDao()
+            for (sd in res.sdsList) {
+                sdDao.insert(
+                    SocialDistancing(
+                        strand_id = sd.strandId,
+                        social_distancing_factor = sd.socialDistancingFactor
+                    )
+                )
+            }
 
             // TODO: prune old strands
 

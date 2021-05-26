@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import io.bluetrace.opentrace.Preference
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordDatabase
+import org.safeblues.android.persistence.SocialDistancingDao
+import org.safeblues.android.persistence.SocialDistancingDatabase
 import org.safeblues.android.persistence.Strand
 import org.safeblues.android.persistence.StrandDatabase
 import org.safeblues.api.SafeBluesProtos
@@ -93,10 +95,16 @@ object CD {
         return gamma(strand.infectious_period_mean_sec, strand.infectious_period_shape)
     }
 
+    private fun getSocialDistancingFactor(context: Context, strand_id: Long): Double {
+        val dao = SocialDistancingDatabase.getDatabase(context).sdDao()
+        return dao.getStrandFactor(strand_id) ?: 1.0
+    }
+
     private fun computeInfectionProbability(
         strand: Strand,
         duration: Double /* s */,
-        distance: Double /* m */
+        distance: Double /* m */,
+        social_distancing_factor: Double
     ): Double {
         // assume duration < 30 min (1800 s)   --- And this is SET via the mechanism elsewhere
         val strength = strand.infection_probability_map_p
@@ -105,7 +113,8 @@ object CD {
             Log.w(TAG, "Duration > 30 min encountered: $duration")
         }
         val duration_min = min(duration/60, 30.0)
-        return 1 - exp(-strength * duration_min * (1 - min(radius, distance) / radius))
+        val distance_used = distance * social_distancing_factor
+        return 1 - exp(-strength * duration_min * (1 - min(radius, distance_used) / radius))
     }
 
     private fun infect(context: Context, strand_id: Long) {
@@ -252,7 +261,8 @@ object CD {
                             context, strand.strand_id, computeInfectionProbability(
                                 strand,
                                 time,
-                                dist
+                                dist,
+                                getSocialDistancingFactor(context, strand_id)
                             )
                         )
                     }
