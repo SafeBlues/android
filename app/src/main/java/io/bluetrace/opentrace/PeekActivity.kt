@@ -19,6 +19,7 @@ import io.bluetrace.opentrace.streetpass.view.RecordViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.safeblues.android.API
+import org.safeblues.android.CD
 
 
 class PeekActivity : AppCompatActivity() {
@@ -92,6 +93,7 @@ class PeekActivity : AppCompatActivity() {
         }
 
         seed_all_on.setOnClickListener{
+            CD.testSeeeding(it.context)
             Preference.putSeedAll(it.context, false)
             seed_all_on.visibility = View.GONE
             seed_all_off.visibility = View.VISIBLE

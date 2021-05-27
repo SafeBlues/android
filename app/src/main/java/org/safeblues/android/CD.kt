@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import io.bluetrace.opentrace.Preference
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordDatabase
-import org.safeblues.android.persistence.SocialDistancingDao
 import org.safeblues.android.persistence.SocialDistancingDatabase
 import org.safeblues.android.persistence.Strand
 import org.safeblues.android.persistence.StrandDatabase
@@ -72,7 +71,27 @@ object CD {
         return GammaAcceptanceRejectionGen(stream, GammaDist(alpha, lambda)).nextDouble()
     }
 
-    fun testSeeeding() {
+    fun testSeeeding(context: Context) {
+        val strand_id: Long = 2;
+
+        val strandDb = StrandDatabase.getDatabase(context).strandDao()
+
+        val strand = strandDb.getStrand(strand_id)
+        val sdfac = getSocialDistancingFactor(context, strand_id)
+
+        Log.i(TAG, "Got strand: " + strand_id)
+
+        if (strand != null) {
+            infectWithProb(
+                context, strand.strand_id, computeInfectionProbability(
+                    strand,
+                    30*60.0,
+                    2.0,
+                    sdfac
+                )
+            )
+        }
+
         Log.i(TAG, "u1: " + uniform().toString())
         Log.i(TAG, "u2: " + uniform().toString())
         Log.i(TAG, "u3: " + uniform().toString())
@@ -84,7 +103,6 @@ object CD {
         Log.i(TAG, "g3: " + gamma(1.0, 2.0).toString())
         Log.i(TAG, "g4: " + gamma(1.0, 2.0).toString())
         Log.i(TAG, "g5: " + gamma(1.0, 2.0).toString())
-
     }
 
     private fun simulateIncubationPeriod(strand: Strand): Double /* s */ {

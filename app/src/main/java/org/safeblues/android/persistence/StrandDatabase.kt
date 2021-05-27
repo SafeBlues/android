@@ -28,7 +28,7 @@ abstract class StrandDatabase : RoomDatabase() {
                     context,
                     StrandDatabase::class.java,
                     "strand_database"
-                ).fallbackToDestructiveMigration().build()
+                ).fallbackToDestructiveMigration().allowMainThreadQueries().build()
                 INSTANCE = instance
                 return instance
             }

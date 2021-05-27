@@ -27,7 +27,7 @@ abstract class SocialDistancingDatabase : RoomDatabase() {
                     context,
                     SocialDistancingDatabase::class.java,
                     "social_distancing_database"
-                ).fallbackToDestructiveMigration().build()
+                ).fallbackToDestructiveMigration().allowMainThreadQueries().build()
                 INSTANCE = instance
                 return instance
             }
