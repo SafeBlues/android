@@ -99,7 +99,7 @@ class HomeFragment : Fragment() {
         }
 
         animation_view.setOnClickListener {
-            if (BuildConfig.DEBUG && ++counter == 10) {
+            if (BuildConfig.DEBUG && ++counter == 3) {
                 counter = 0
                 var intent = Intent(context, PeekActivity::class.java)
                 context?.startActivity(intent)

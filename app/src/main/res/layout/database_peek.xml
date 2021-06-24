@@ -31,7 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/ic_unfold_less_black_24dp" />
+            android:src="@drawable/ic_unfold_less_black_24dp"
+            android:visibility="gone" />
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -39,9 +40,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/ic_unfold_more_black_24dp" />
+            android:src="@drawable/ic_unfold_more_black_24dp"
+            android:visibility="gone" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/sb_experiment_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Experiment (off)"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recyclerview" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -77,7 +89,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/ic_play_arrow_black_24dp" />
+            android:src="@drawable/ic_play_arrow_black_24dp"
+            android:visibility="gone" />
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -85,7 +98,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/ic_stop_black_24dp" />
+            android:src="@drawable/ic_stop_black_24dp"
+            android:visibility="gone" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/push_pull"

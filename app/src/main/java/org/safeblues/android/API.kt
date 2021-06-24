@@ -60,7 +60,7 @@ object API {
             repeatingRequestExperiment)
     }
 
-    private fun getStub(): SafeBluesGrpcKt.SafeBluesCoroutineStub {
+    fun getStub(): SafeBluesGrpcKt.SafeBluesCoroutineStub {
         val channel = ManagedChannelBuilder.forAddress("api.safeblues.org", 8443).useTransportSecurity().build()
         return SafeBluesGrpcKt.SafeBluesCoroutineStub(channel)
     }

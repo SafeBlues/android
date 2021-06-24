@@ -2,11 +2,15 @@ package org.safeblues.android
 
 import android.content.Context
 import android.util.Log
+import com.google.protobuf.util.Timestamps.fromMillis
+import io.bluetrace.opentrace.BuildConfig
 import io.bluetrace.opentrace.Preference
 import io.bluetrace.opentrace.streetpass.persistence.StreetPassRecordDatabase
+import io.grpc.ManagedChannelBuilder
 import org.safeblues.android.persistence.SocialDistancingDatabase
 import org.safeblues.android.persistence.Strand
 import org.safeblues.android.persistence.StrandDatabase
+import org.safeblues.api.SafeBluesGrpcKt
 import org.safeblues.api.SafeBluesProtos
 import umontreal.ssj.probdist.GammaDist
 import umontreal.ssj.randvar.GammaAcceptanceRejectionGen
@@ -184,7 +188,6 @@ object CD {
 
     suspend fun update(context: Context) {
         // this function
-
         Log.i(TAG, "Running Safe Blues simulation step!")
 
         val db = StreetPassRecordDatabase.getDatabase(context).recordDao()
@@ -193,6 +196,8 @@ object CD {
         val now = System.currentTimeMillis()
         val before_time = now - 30*60*1000
         var temp_ids = db.getTempIdsNeedingProcessing(before_time)
+
+        val debugBundle = SafeBluesProtos.DebugDataBundle.newBuilder()
 
         if (temp_ids.size >= 1) {
             val strandDb = StrandDatabase.getDatabase(context).strandDao()
@@ -257,6 +262,28 @@ object CD {
                 val strand_ids = SafeBluesProtos.ShareList.parseFrom(shareList).strandsList
                 Log.i(TAG, "Strands: " + strand_ids.toString())
 
+                if (BuildConfig.DEBUG) {
+                    if (Preference.getInExperiment(context)) {
+                        val exp_id = Preference.getExperimentId(context)
+                        val pid = Preference.getParticipantId(context)
+                        val dd = SafeBluesProtos.DebugData.newBuilder()
+
+                        dd.experimentId = exp_id
+                        dd.participantId = pid
+                        dd.now = fromMillis(now)
+                        dd.firstSeen = fromMillis(first_seen)
+                        dd.lastSeen = fromMillis(last_seen)
+                        dd.addAllTxPowers(txPowers)
+                        dd.addAllRssis(RSSIs)
+                        dd.duration = time
+                        dd.distance = dist
+                        dd.temporaryId = tempId
+                        dd.addAllStrandIds(strand_ids)
+
+                        debugBundle.addData(dd)
+                    }
+                }
+
                 for (strand_id in strand_ids) {
                     val strand = strandDb.getStrand(strand_id)
                     if (strand == null) {
@@ -290,6 +317,10 @@ object CD {
             }
         } else {
             Log.i(TAG, "No records to process")
+        }
+
+        if (BuildConfig.DEBUG) {
+            API.getStub().pushDebugData(debugBundle.build())
         }
 
         // Double check

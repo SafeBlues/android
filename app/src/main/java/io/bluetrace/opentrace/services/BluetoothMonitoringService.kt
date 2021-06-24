@@ -552,7 +552,8 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         override fun onReceive(context: Context, intent: Intent) {
 
             if (ACTION_RECEIVED_STREETPASS == intent.action) {
-                var connRecord: SafeBluesProtos.ConnRec = SafeBluesProtos.ConnRec.parseFrom(intent.getByteArrayExtra(STREET_PASS))
+                var connRecord: SafeBluesProtos.ConnRec =
+                    SafeBluesProtos.ConnRec.parseFrom(intent.getByteArrayExtra(STREET_PASS))
                 CentralLog.d(TAG, "ConnRec received: $connRecord")
 
                 val record = StreetPassRecord(
@@ -566,10 +567,18 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                 )
 
                 launch {
-                    CentralLog.d(TAG, "Coroutine - Saving StreetPassRecord: ${Utils.getDate(record.timestamp)}")
-                    streetPassRecordStorage.saveRecord(record)
+                    CentralLog.d(
+                        TAG,
+                        "Coroutine - Saving StreetPassRecord: ${Utils.getDate(record.timestamp)}"
+                    )
+                    if (!(BuildConfig.DEBUG && Preference.getInExperiment(context))) {
+                        streetPassRecordStorage.saveRecord(record)
+                    }
                     CentralLog.i("QUESTION", "Am I not here?")
-                    CentralLog.i("QUESTION", "I'm here: " + (Looper.myLooper() == Looper.getMainLooper()).toString())
+                    CentralLog.i(
+                        "QUESTION",
+                        "I'm here: " + (Looper.myLooper() == Looper.getMainLooper()).toString()
+                    )
                     CDWorker.enqueueUpdate(context)
                 }
             }

@@ -21,6 +21,9 @@ object Preference {
 
     private const val SEED_ALL = "SEED_ALL"
 
+    private const val IN_EXPERIMENT = "IN_EXPERIMENT"
+    private const val EXPERIMENT_ID = "EXPERIMENT_ID"
+
     private const val NEXT_FETCH_TIME = "NEXT_FETCH_TIME"
     private const val EXPIRY_TIME = "EXPIRY_TIME"
     private const val LAST_FETCH_TIME = "LAST_FETCH_TIME"
@@ -71,6 +74,26 @@ object Preference {
     fun putSeedAll(context: Context, value: Boolean) {
         context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
             .edit().putBoolean(SEED_ALL, value).apply()
+    }
+
+    fun getInExperiment(context: Context): Boolean {
+        return context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE).getBoolean(IN_EXPERIMENT, false)
+    }
+
+    fun putInExperiment(context: Context, value: Boolean) {
+        context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+            .edit().putBoolean(IN_EXPERIMENT, value).apply()
+    }
+
+    fun getExperimentId(context: Context): Int {
+        return context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE).getInt(EXPERIMENT_ID, 0)
+    }
+
+    fun getNextExperimentId(context: Context): Int {
+        val id = context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE).getInt(EXPERIMENT_ID, 0)
+        context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+            .edit().putInt(EXPERIMENT_ID, id + 1).apply()
+        return context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE).getInt(EXPERIMENT_ID, 0)
     }
 
     fun getClientSecret(context: Context): String {

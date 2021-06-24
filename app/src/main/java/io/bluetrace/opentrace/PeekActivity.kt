@@ -1,5 +1,6 @@
 package io.bluetrace.opentrace
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -20,6 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.safeblues.android.API
 import org.safeblues.android.CD
+import org.safeblues.android.CDWorker
 
 
 class PeekActivity : AppCompatActivity() {
@@ -36,6 +38,15 @@ class PeekActivity : AppCompatActivity() {
         GlobalScope.launch { // or whatever
             api.syncStrandsWithServer(view.context)
             api.pushStatsToServer(view.context)
+        }
+    }
+
+    private fun setExperimentButtonState(context: Context) {
+        val in_experiment = Preference.getInExperiment(context)
+        if (in_experiment) {
+            sb_experiment_button.text = "Experiment (on: " + Preference.getExperimentId(context) + ")"
+        } else {
+            sb_experiment_button.text = "Experiment (off)"
         }
     }
 
@@ -68,7 +79,6 @@ class PeekActivity : AppCompatActivity() {
                 adapter.setMode(RecordListAdapter.MODE.COLLAPSE)
             }
         }
-
 
         start.setOnClickListener {
             startService()
@@ -104,6 +114,21 @@ class PeekActivity : AppCompatActivity() {
             seed_all_on.visibility = View.VISIBLE
             seed_all_off.visibility = View.GONE
         }
+
+        sb_experiment_button.setOnClickListener{
+            val in_experiment = Preference.getInExperiment(it.context)
+            if (in_experiment) {
+                // end of experiment
+                CDWorker.enqueueUpdate(it.context)
+            } else {
+                // start of new one
+                Preference.getNextExperimentId(it.context)
+            }
+            Preference.putInExperiment(it.context, !in_experiment)
+            setExperimentButtonState(it.context)
+        }
+
+        setExperimentButtonState(this)
 
         delete.setOnClickListener { view ->
             view.isEnabled = false
