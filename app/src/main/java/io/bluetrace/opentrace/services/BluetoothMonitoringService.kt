@@ -571,7 +571,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                         TAG,
                         "Coroutine - Saving StreetPassRecord: ${Utils.getDate(record.timestamp)}"
                     )
-                    if (!(BuildConfig.DEBUG && Preference.getInExperiment(context))) {
+                    if (!(BuildConfig.DEBUG && !Preference.getInExperiment(context))) {
                         streetPassRecordStorage.saveRecord(record)
                     }
                     CentralLog.i("QUESTION", "Am I not here?")
