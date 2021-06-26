@@ -187,17 +187,22 @@ object CD {
     }
 
     suspend fun update(context: Context) {
-        // this function
+        // Update is called:
+        // * When turning experiment off
+        // * When receiving a ConnRec from another phone
+        // * When syncing with the server (every 15 min!)
+        //
+        // it's supposed to process all ended sessions (i.e. over 30 min or if the phone left i.e. timeout)
         Log.i(TAG, "Running Safe Blues simulation step!")
 
         val db = StreetPassRecordDatabase.getDatabase(context).recordDao()
+        val debugBundle = SafeBluesProtos.DebugDataBundle.newBuilder()
 
         // get devices that haven't been processed and which have unprocessed records older than 30 min
         val now = System.currentTimeMillis()
         val before_time = now - 30*60*1000
+        // gets the first record (about a connection) for each temp id, conditional on that record being older than 30 min old
         var temp_ids = db.getTempIdsNeedingProcessing(before_time)
-
-        val debugBundle = SafeBluesProtos.DebugDataBundle.newBuilder()
 
         if (temp_ids.size >= 1) {
             val strandDb = StrandDatabase.getDatabase(context).strandDao()
@@ -210,13 +215,10 @@ object CD {
                 val shareList = record.shareList
                 Log.i(TAG, "Processing tempId: " + tempId)
 
-                // TODO(aapeli): walk through all records from that tempID and compute time + median distance/etc
-                // TODO(aapeli): run a check first to see if there's any strands that need an update
-
                 var first_seen = Long.MAX_VALUE
                 var last_seen = Long.MIN_VALUE
 
-                val all_records = db.getAllRecordsForTempId(tempId)
+                val all_records = db.getAllUnprocessedRecordsForTempId(tempId)
 
                 assert(all_records.size > 0)
 
@@ -244,7 +246,8 @@ object CD {
                 txPowers.sort()
                 RSSIs.sort()
 
-                val medianTxPower = txPowers[txPowers.size / 2]
+                // tx power was screwed up and doesn't even work before Oreo
+                val medianTxPower = 0 // txPowers[txPowers.size / 2]
                 val medianRSSI = RSSIs[RSSIs.size / 2]
 
                 // refer to https://stackoverflow.com/a/24245724

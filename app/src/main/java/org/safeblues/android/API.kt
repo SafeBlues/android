@@ -189,7 +189,7 @@ object API {
             val tempId = Base64.encodeToString(Random.nextBytes(16), Base64.DEFAULT)
             val now = System.currentTimeMillis()
             // TODO(aapeli): change to 60 min in final version?
-            val record = TempID(tempId, now, now + 10 * 60 * 1000)
+            val record = TempID(tempId, now, now + 180 * 60 * 1000)
 
             runBlocking {
                 tempIDDao.insert(record)
